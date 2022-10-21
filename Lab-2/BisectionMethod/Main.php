@@ -2,38 +2,43 @@
 
 declare(strict_types=1);
 
-function func(float $x): float
-{
-    return ($x * $x) - 2;
+require_once('Bisection.php');
+//Тестовый файл для проверки работы методов файла Bisection.php
+
+//Проверка для случая одного изолрованного корня
+$a = 0;
+$b = 2;
+$eps = 1E-4;
+$y = fn($x) => $x * $x - 2;
+try {
+    $rootWithIts = BisectionMethod($a, $b, $y, $eps);
+
+    echo 'Корень уравнения на отрезке [0; 2] равен ';
+    printWithTrueSigns($rootWithIts['root'], $eps);
+    echo "\nЧисло итераций равно {$rootWithIts['iterations']}\n";
+} catch (Exception $e) {
+    print ($e->getMessage());
 }
 
-$a = 0.0;
-$b = 2.0;
-$eps = 0.0001;
-$i = 0;
+//Проверка для случая нескольких корней (тут их 2). Функция та же, но отрезок [-2; 2]
 
-do {
+$a = -2;
+echo "Поиск корней уравнения на отрезке [-2; 2]\n";
 
-    $x0 = ($a + $b) / 2.0;
+$roots = findAllRoots($a, $b, $y);
 
-    if (func($x0) * func($a) < 0) $b = $x0;
-    else $a = $x0;
+if ( $roots == null) {
+    echo 'Корней нет';
+} else {
 
-    $i++;
+    echo 'Найденные корни уравнения: ';
 
-} while(abs(func($x0)) >= $eps);
+    foreach($roots as $root) {
+        printWithTrueSigns($root);
+        echo ', ';
+    }
 
-$x0 = ($a + $b) / 2.0;
-$signNum = 0; //в signNum будет храниться число верных знаков после запятой, зависит от точности eps
-if ($eps <= 1) {
-
-    $epsSt = (string)$eps;
-    $n = explode( '.', $epsSt)[1];
-    if (strpos($n, 'E')) $signNum = (float)substr($n, strpos($n, 'E') + 2);
-    else $signNum = strlen($n);
+    echo "\n";
 }
 
-
-printf( "Корень уравнения равен %.{$signNum}f\n", $x0);
-echo "Количество итераций равно " . $i;
-
+?>
