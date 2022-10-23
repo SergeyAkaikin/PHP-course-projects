@@ -27,13 +27,13 @@ echo "Поиск корней уравнения на отрезке [-2; 2]\n";
 
 $roots = findAllRoots($a, $b, $y);
 
-if ( $roots == null) {
+if ($roots == null) {
     echo 'Корней нет';
 } else {
 
     echo 'Найденные корни уравнения: ';
 
-    foreach($roots as $root) {
+    foreach ($roots as $root) {
         printWithTrueSigns($root);
         echo ', ';
     }
@@ -41,4 +41,4 @@ if ( $roots == null) {
     echo "\n";
 }
 
-?>
+
