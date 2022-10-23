@@ -11,7 +11,7 @@ $b = 2;
 $eps = 1E-4;
 $y = fn($x) => $x * $x - 2;
 try {
-    $rootWithIts = BisectionMethod($a, $b, $y, $eps);
+    $rootWithIts = bisectionMethod($a, $b, $y, $eps);
 
     echo 'Корень уравнения на отрезке [0; 2] равен ';
     printWithTrueSigns($rootWithIts['root'], $eps);

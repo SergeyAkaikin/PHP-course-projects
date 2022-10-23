@@ -1,6 +1,6 @@
 <?php
     declare(strict_types = 1);
-    function BisectionMethod(float $a, float $b, callable $function, float $eps = 1E-4): array {
+    function bisectionMethod(float $a, float $b, callable $function, float $eps = 1E-4): array {
         $iterations = 0;
 
         do {
