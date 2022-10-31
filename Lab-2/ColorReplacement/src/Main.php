@@ -13,7 +13,7 @@ $colorsMap = readColorsFromFile($colorsFile);
 $sourceFile = '../resources/input/source.txt';
 $targetFile = '../resources/output/target.txt';
 // reads source.txt, replaces colors, writes target.txt, collects data about replaced colors
-$fullHexReg = '/#([A-F]|[a-f]|[0-9]){6}/u';
+$fullHexReg = '/(#(([A-F]|[a-f]|[0-9]){3}){1,2})|(rgb\(\d{1,3}, \d{1,3}, \d{1,3}\))/u';
 $usedColorsMap = replaceAndCollectColors($colorsMap, $fullHexReg, $sourceFile, $targetFile);
 
 $usedColorsFile = fopen('../resources/output/used_colors.txt', 'w');
