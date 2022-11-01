@@ -1,0 +1,15 @@
+FirstIncorrectColor #DAA52
+FirstCorrectColor #B8860B
+SecondCorrectColor #BC8F8F
+ThirdCorrectColor #CD5C5C
+SecondIncorrectColor #8B4513F
+ThirdIncorrectColor rgb(23, 25, 255)
+FourthCorrectColor #CD853F
+FifthCorrectColor #DEB887
+FourthIncorrectColor #F5F
+SixthCorrectColor #F4A460
+some string with no color
+FifthIncorrectColor #d2691e
+SixthIncorrectColor #B222
+one more string with no color
+SeventhIncorrectColor rgb(109,252,0)

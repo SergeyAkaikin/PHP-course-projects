@@ -11,34 +11,42 @@ $b = 2;
 $eps = 1E-4;
 $y = fn($x) => $x * $x - 2;
 try {
-    $rootWithIts = bisectionMethod($a, $b, $y, $eps);
+    $rootWithIterations = bisectionMethod($a, $b, $y, $eps);
 
     echo 'Корень уравнения на отрезке [0; 2] равен ';
-    printWithTrueSigns($rootWithIts['root'], $eps);
-    echo "\nЧисло итераций равно {$rootWithIts['iterations']}\n";
-} catch (Exception $e) {
-    print ($e->getMessage());
+    echo round($rootWithIterations['root'], signsNum($eps));
+    echo "\nЧисло итераций равно {$rootWithIterations['iterations']}\n";
+} catch (InvalidRangeException $er) {
+    print ($er->getMessage());
+} catch (NoneOrManyRootsException $en) {
+    print ($en->getMessage());
 }
 
 //Проверка для случая нескольких корней (тут их 2). Функция та же, но отрезок [-2; 2]
 
-$a = -2;
-echo "Поиск корней уравнения на отрезке [-2; 2]\n";
 
-$roots = findAllRoots($a, $b, $y);
+try {
 
-if ($roots == null) {
-    echo 'Корней нет';
-} else {
+    $a = -2;
+    echo "Поиск корней уравнения на отрезке [-2; 2]\n";
 
-    echo 'Найденные корни уравнения: ';
+    $roots = findAllRoots($a, $b, $y, $eps);
 
-    foreach ($roots as $root) {
-        printWithTrueSigns($root);
-        echo ', ';
+    if ($roots == null) {
+        echo 'Корней нет';
+    } else {
+
+        echo 'Найденные корни уравнения: ';
+
+        foreach ($roots as $root) {
+            echo round($root, signsNum($eps));
+            echo ', ';
+        }
+
+        echo "\n";
     }
-
-    echo "\n";
+} catch (InvalidRangeException $e) {
+    print($e->getMessage());
 }
 
 

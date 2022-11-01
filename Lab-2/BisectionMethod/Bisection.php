@@ -1,11 +1,30 @@
 <?php
 declare(strict_types=1);
+
+class NoneOrManyRootsException extends Exception{
+
+}
+class InvalidRangeException extends Exception {
+
+}
+
+/**
+ * @param float $a
+ * @param float $b
+ * @param callable $function
+ * @param float $eps
+ * @return array
+ * @throws InvalidRangeException
+ * @throws NoneOrManyRootsException
+ */
 function bisectionMethod(float $a, float $b, callable $function, float $eps = 1E-4): array
 {
     $iterations = 0;
 
+    if ($a >= $b) throw new InvalidRangeException('Invalid range of line segment');
+
     do {
-        if ($function($a) * $function($b) > 0) throw new Exception('There is no root 
+        if ($function($a) * $function($b) > 0) throw new NoneOrManyRootsException('There is no root 
             or more than one root in line segment');
 
         $x0 = ($a + $b) / 2.0;
@@ -28,6 +47,15 @@ function bisectionMethod(float $a, float $b, callable $function, float $eps = 1E
     тем выше вероятность, что ни один корень не будет потерян, но тем более будут расти временные
     затраты */
 
+/**
+ * @param float $a
+ * @param float $b
+ * @param callable $function
+ * @param float $eps
+ * @param float $step
+ * @return array|null
+ * @throws InvalidRangeException
+ */
 function findAllRoots(
     float    $a,
     float    $b,
@@ -49,8 +77,7 @@ function findAllRoots(
                 $x[] = $sectionRoot['root'];
                 $iterations += $sectionRoot['iterations'];
 
-            } catch (Exception $e) {
-                echo "Some mistake\n";
+            } catch (NoneOrManyRootsException $e) { //отрезок, не содержащий в себе корня уравнения
             }
         }
 
@@ -61,17 +88,22 @@ function findAllRoots(
     return $x;
 }
 
-//Функция форматированного вывода с верными знаками после запятой
-function printWithTrueSigns(float $number, float $eps = 1E-4): void
+//Функция, возвращающая число верных знаков после запятой, исходя из точности eps
+/**
+ * @param float $eps
+ * @return int
+ */
+function signsNum(float $eps = 1E-4): int
 {
-    $signNum = 0; //число верных знаков
-    if ($eps <= 1) {
+    $signsNum = 0; //число верных знаков
+    if ($eps < 1) {
 
-        $epsSt = (string)$eps;
-        $n = explode('.', $epsSt)[1];
-        if (strpos($n, 'E')) $signNum = (float)substr($n, strpos($n, 'E') + 2);
-        else $signNum = strlen($n);
+        $epsString = (string)$eps;
+        $afterDot = explode('.', $epsString)[1];
+        if (str_contains($afterDot, 'E')) $signsNum = (int)substr($afterDot, strpos($afterDot, 'E') + 2);
+        else $signsNum = strlen($afterDot);
     }
-    printf("%.{$signNum}f", $number);
+
+    return $signsNum;
 }
 

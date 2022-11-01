@@ -1,0 +1,6 @@
+FirstIncorrectColor #123
+SecondIncorrectColor #FFFFF
+ThirdIncorrectColor #00
+FourthIncorrectColor rgb(0, 128, 76)
+FifthIncorrectColor #127FFFA
+SixthIncorrectColor #FFFFF0000FFF
