@@ -43,8 +43,7 @@ function replaceAndCollectColors(array $colorsMap, string $sourceFileName, strin
 
         $blueColor = dechex((int)$blueColor);
         if (strlen($blueColor) == 1) $blueColor = '0' . $blueColor;
-
-        return strtoupper('#' . $greenColor . $greenColor . $blueColor);
+        return strtoupper('#' . $redColor . $greenColor . $blueColor);
     };
 
     $hex6 = fn(string $hexFormat): string => strtoupper($hexFormat);
