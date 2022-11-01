@@ -5,7 +5,7 @@ function readColorsFromFile(string $fileName): array
 {
     $textFromFile = file_get_contents($fileName);
     $matchString = [];
-    preg_match_all("/.*?\s#([A-F]|[0-9]){6}/u", $textFromFile, $matchString);
+    preg_match_all("/\b.*?\s#([A-F]|[0-9]){6}\b/u", $textFromFile, $matchString);
     $colorsMap = [];
     foreach ($matchString[0] as $colorString) {
         $colorString = trim($colorString);
@@ -24,7 +24,7 @@ function replaceAndCollectColors(array $colorsMap, string $sourceFileName, strin
     $usedColorsMap = [];
 
     $hex3ToHex6 = function (string $colorString): string {
-        $colorString = preg_replace_callback_array(
+        $colorString = preg_replace_callback_array( //character doubling
             ['/[a-fA-F0-9]/u' => fn(array $match): string => $match[0] . $match[0]],
             $colorString
         );
@@ -63,8 +63,8 @@ function replaceAndCollectColors(array $colorsMap, string $sourceFileName, strin
         $targetFileName,
         preg_replace_callback_array(
             [
-                '/#[a-fA-F0-9]{6}/u' => fn(array $match): string => $colorName($match[0], $hex6),
-                '/#[a-fA-F0-9]{3}/u' => fn(array $match): string => $colorName($match[0], $hex3ToHex6),
+                '/#\b[a-fA-F0-9]{6}\b/u' => fn(array $match): string => $colorName($match[0], $hex6),
+                '/#\b[a-fA-F0-9]{3}\b/u' => fn(array $match): string => $colorName($match[0], $hex3ToHex6),
                 '/rgb\(\s*?\d{1,3},\s*?\d{1,3},\s*?\d{1,3}\s*?\)/u' => fn(array $match): string => $colorName($match[0], $rgbToHex6)
             ],
             $textFromFile
