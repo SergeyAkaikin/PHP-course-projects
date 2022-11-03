@@ -1,51 +1,28 @@
 <?php
 declare(strict_types=1);
 
-class NoneOrManyRootsException extends Exception{
-
-}
 class InvalidRangeException extends Exception {
 
 }
 
 /**
- * @param float $a
- * @param float $b
- * @param callable $function
- * @param float $eps
- * @return array
- * @throws InvalidRangeException
- * @throws NoneOrManyRootsException
+ * @property-read float $root
+ * @property-read int $iterations
  */
-function bisectionMethod(float $a, float $b, callable $function, float $eps = 1E-4): array
-{
-    $iterations = 0;
+class ResultModel {
+    public readonly float $root;
+    public readonly int $iterations;
 
-    if ($a >= $b) throw new InvalidRangeException('Invalid range of line segment');
-
-    do {
-        if ($function($a) * $function($b) > 0) throw new NoneOrManyRootsException('There is no root 
-            or more than one root in line segment');
-
-        $x0 = ($a + $b) / 2.0;
-
-        if ($function($x0) * $function($a) < 0) $b = $x0;
-        else $a = $x0;
-
-        $iterations++;
-
-    } while (abs($function($x0)) >= $eps);
-
-    $x0 = ($a + $b) / 2.0;
-
-    return ["root" => $x0, "iterations" => $iterations];
+    /**
+     * @param float $root
+     * @param int $iterations
+     */
+    public function __construct(float $root, int $iterations)
+    {
+        $this->root = $root;
+        $this->iterations = $iterations;
+    }
 }
-
-/*  Далее реализован метод поиска всех корней с помощью метода бисекции, следует отметить,
-    что он всё ещё может пропускать некоторые корни: если более одного корня будут лежать
-    в одном из отрезков $step (внутри отрезка [a, b]) - точность поиска корней, чем меньше $step,
-    тем выше вероятность, что ни один корень не будет потерян, но тем более будут расти временные
-    затраты */
 
 /**
  * @param float $a
@@ -53,49 +30,55 @@ function bisectionMethod(float $a, float $b, callable $function, float $eps = 1E
  * @param callable $function
  * @param float $eps
  * @param float $step
- * @return array|null
+ * @return array
  * @throws InvalidRangeException
  */
-function findAllRoots(
-    float    $a,
-    float    $b,
-    callable $function,
-    float    $eps = 1E-4,
-    float    $step = 0.1
-): ?array
+
+function bisectionMethod(float $a, float $b, callable $function, float $eps = 1E-4, float $step = 0.1): array
 {
-    $x = [];
-    $iterations = 0;
+    if ($a >= $b) throw new InvalidRangeException('Invalid range of line segment');
+
+    $rootsArray = [];
+
     for ($x1 = $a; $x1 < $b; $x1 += $step) {
-        $x2 = $x1 + $step;
+        $left = $x1;
+        $right = $x1 + $step;
 
-        if ($function($x1) * $function($x2) < 0) { //отрезки, внутри которых нуль
-            // или более 1 корней не рассматриваются
-            try {
-                $sectionRoot = BisectionMethod($x1, $x2, $function, $eps);
+        if ($function($left) * $function($right) < 0) {
+            $iterations = 0;
 
-                $x[] = $sectionRoot['root'];
-                $iterations += $sectionRoot['iterations'];
+            do {
+                $x0 = ($left + $right) / 2.0;
 
-            } catch (NoneOrManyRootsException $e) { //отрезок, не содержащий в себе корня уравнения
-            }
+                if ($function($x0) * $function($left) < 0) {
+                    $right = $x0;
+                }
+                else {
+                    $left = $x0;
+                }
+
+                $iterations++;
+
+            } while (abs($function($x0)) >= $eps);
+
+            $x0 = ($left + $right) / 2.0;
+
+            $rootsArray[] = new ResultModel($x0, $iterations);
         }
-
     }
-    if (!empty($x))
-        echo "Всего было затрачено {$iterations} итераций\n";
 
-    return $x;
+
+    return $rootsArray;
 }
 
-//Функция, возвращающая число верных знаков после запятой, исходя из точности eps
 /**
  * @param float $eps
  * @return int
  */
+
 function signsNum(float $eps = 1E-4): int
 {
-    $signsNum = 0; //число верных знаков
+    $signsNum = 0;
     if ($eps < 1) {
 
         $epsString = (string)$eps;
