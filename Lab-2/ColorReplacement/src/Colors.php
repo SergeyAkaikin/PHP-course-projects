@@ -6,7 +6,8 @@ declare(strict_types=1);
  * @return string
  */
 
-function getFileText(string $fileName): string {
+function getFileText(string $fileName): string
+{
     $file = fopen($fileName, 'r');
     $text = '';
     while (($line = fgets($file)) !== false) {
@@ -109,7 +110,7 @@ function getUsedColors(array $colorsMap, string $sourceFileName): array
     $usedColorsWithFormat('/#\b[a-fA-F0-9]{3}\b/u', 'hex3ToHex6');
     $usedColorsWithFormat('/rgb\(\s*?\d{1,3},\s*?\d{1,3},\s*?\d{1,3}\s*?\)/u', 'rgbToHex6');
 
-    uksort($usedColorsMap, fn($first, $second):int => $first <=> $second);
+    uksort($usedColorsMap, fn($first, $second): int => $first <=> $second);
     return $usedColorsMap;
 }
 

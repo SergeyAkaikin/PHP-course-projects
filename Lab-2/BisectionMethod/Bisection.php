@@ -1,7 +1,8 @@
 <?php
 declare(strict_types=1);
 
-class InvalidRangeException extends Exception {
+class InvalidRangeException extends Exception
+{
 
 }
 
@@ -9,7 +10,8 @@ class InvalidRangeException extends Exception {
  * @property-read float $root
  * @property-read int $iterations
  */
-class ResultModel {
+class ResultModel
+{
     public readonly float $root;
     public readonly int $iterations;
 
@@ -52,8 +54,7 @@ function bisectionMethod(float $a, float $b, callable $function, float $eps = 1E
 
                 if ($function($x0) * $function($left) < 0) {
                     $right = $x0;
-                }
-                else {
+                } else {
                     $left = $x0;
                 }
 
