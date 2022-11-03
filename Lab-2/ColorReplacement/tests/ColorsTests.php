@@ -45,17 +45,15 @@ class ColorsTests extends TestCase
      * @dataProvider validInputAndOutputFilesProvider
      */
 
-    public function test_replaceAndCollectColors_colorsWithDifferentFormatsToReplace_allColorsCorrectlyReplaced(
+    public function test_replaceColors_colorsWithDifferentFormatsToReplace_allColorsCorrectlyReplaced(
         array $colorsMap,
         string $sourceFileName,
         string $targetFileName,
-        array $expectedUsedColorsMap,
         string $expectedOutPutFile
     ): void {
-        $getUsedColorsMap = replaceAndCollectColors($colorsMap, $sourceFileName, $targetFileName);
-        $this->assertEquals($expectedUsedColorsMap, $getUsedColorsMap);
-        $expectedFileText = file_get_contents($expectedOutPutFile);
-        $getTargetFileText = file_get_contents($targetFileName);
+        replaceColors($colorsMap, $sourceFileName, $targetFileName);
+        $expectedFileText = getFileText($expectedOutPutFile);
+        $getTargetFileText = getFileText($targetFileName);
         $this->assertEquals($expectedFileText, $getTargetFileText);
     }
     public function validInputAndOutputFilesProvider(): array {
@@ -64,16 +62,22 @@ class ColorsTests extends TestCase
                 ['#20B2AA' => 'FirstColor', '#CD5C5C' => 'SecondColor', '#8B4513' => 'ThirdColor', '#CD853F' => 'FourthColor',  '#FF00FF' => 'FifthColor', '#FFFF00' => 'SixthColor'],
                 'testFiles/testInput/replaceTestSourceFile1.txt',
                 'testFiles/testOutput/resultTestFile1.txt',
-                ['#CD5C5C' => 'SecondColor', '#FF00FF' => 'FifthColor', '#CD853F' => 'FourthColor', '#20B2AA' => 'FirstColor', '#FFFF00' => 'SixthColor'],
                 'testFiles/testOutput/expectedFile1.txt'
             ]
         ];
     }
 
-    public function test_replaceAndCollectColors_noneReplacedColors_emptyUsedColorsMap() {
+    public function test_getUsedColors_noneReplacedColors_emptyUsedColorsMap() {
         $getColorsMap = readColorsFromFile('testFiles/testInput/colorsTestWithCorrectValuesFile2.txt');
-        $getUsedColorsMap = replaceAndCollectColors($getColorsMap, 'testFiles/testInput/replaceTestSourceFile2.txt', 'testFiles/testOutput/resultTestFile2.txt');
-        var_dump($getUsedColorsMap);
+        $getUsedColorsMap = getUsedColors($getColorsMap, 'testFiles/testInput/replaceTestSourceFile2.txt');
         $this->assertEmpty($getUsedColorsMap);
+    }
+
+    public function test_getUsedColors_correctSourceFile_correctUsedColorsMap(){
+        $sourceFileName = 'testFiles/testInput/replaceTestSourceFile1.txt';
+        $colorsMap = ['#20B2AA' => 'FirstColor', '#CD5C5C' => 'SecondColor', '#8B4513' => 'ThirdColor', '#CD853F' => 'FourthColor',  '#FF00FF' => 'FifthColor', '#FFFF00' => 'SixthColor'];
+        $expectedResult = ['#CD5C5C' => 'SecondColor', '#FF00FF' => 'FifthColor', '#CD853F' => 'FourthColor', '#20B2AA' => 'FirstColor', '#FFFF00' => 'SixthColor'];
+        $getResult = getUsedColors($colorsMap, $sourceFileName);
+        $this->assertEquals($expectedResult, $getResult);
     }
 }
