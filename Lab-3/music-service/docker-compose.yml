@@ -1,0 +1,44 @@
+version: '3.9'
+
+volumes:
+  api-music-storage:
+
+networks:
+  c4_network:
+    ipam:
+      driver: default
+      config:
+        - subnet: "172.15.0.0/24"
+
+services:
+  gateway:
+    image: nginx:1.21-alpine
+    restart: always
+    container_name: gateway
+    networks:
+      c4_network:
+        ipv4_address: 172.15.0.2
+    ports:
+      - "80:80"
+    extra_hosts:
+      - "api.music.internal:172.15.0.3"
+    volumes:
+      - ./:/var/www/api-music
+      - ./configs/nginx/conf.d:/etc/nginx/templates/
+
+  api-music:
+    build:
+      context: ./
+      dockerfile: api-music.Dockerfile
+    container_name: api-music
+    working_dir: /var/www/api-music
+    networks:
+      c4_network:
+        ipv4_address: 172.15.0.3
+    ports:
+      - ":9000"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - ./:/var/www/api-music
+      - api-music-storage:/var/www/api-music/storage:rw
