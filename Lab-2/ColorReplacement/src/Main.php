@@ -14,8 +14,8 @@ $sourceFile = '../resources/input/source.txt';
 $targetFile = '../resources/output/target.txt';
 // reads source.txt, replaces colors, writes target.txt, collects data about replaced colors
 
-$usedColorsMap = getUsedColors($colorsMap, $sourceFile);
-replaceColors($colorsMap, $sourceFile, $targetFile);
+$usedColorsMap = replaceColors($colorsMap, $sourceFile, $targetFile);
+
 
 $usedColorsFile = fopen('../resources/output/used_colors.txt', 'w');
 // writes data about replaced colors

@@ -84,52 +84,22 @@ function rgbToHex6(string $colorString): string
 /**
  * @param array $colorsMap
  * @param string $sourceFileName
- * @return array<string, string>
- */
-function getUsedColors(array $colorsMap, string $sourceFileName): array
-{
-    $sourceText = getFileText($sourceFileName);
-
-    $usedColorsMap = [];
-
-    $usedColorsWithFormat = function (
-        string   $regexForColors,
-        callable $formatting
-    ) use (&$colorsMap, &$usedColorsMap, $sourceText): void {
-        $colorsMatches = [];
-        preg_match_all($regexForColors, $sourceText, $colorsMatches);
-        foreach ($colorsMatches[0] as $color) {
-            $color = $formatting($color);
-            if (key_exists($color, $colorsMap) && !key_exists($color, $usedColorsMap)) {
-                $usedColorsMap[$color] = $colorsMap[$color];
-            }
-        }
-    };
-
-    $usedColorsWithFormat('/#\b[a-fA-F0-9]{6}\b/u', fn(string $hexFormat): string => strtoupper($hexFormat));
-    $usedColorsWithFormat('/#\b[a-fA-F0-9]{3}\b/u', 'hex3ToHex6');
-    $usedColorsWithFormat('/rgb\(\s*?\d{1,3},\s*?\d{1,3},\s*?\d{1,3}\s*?\)/u', 'rgbToHex6');
-
-    uksort($usedColorsMap, fn($first, $second): int => $first <=> $second);
-    return $usedColorsMap;
-}
-
-/**
- * @param array $colorsMap
- * @param string $sourceFileName
  * @param string $targetFileName
- * @return void
+ * @return array <string, string>
  */
-function replaceColors(array $colorsMap, string $sourceFileName, string $targetFileName): void
+function replaceColors(array $colorsMap, string $sourceFileName, string $targetFileName): array
 {
     $textFromFile = getFileText($sourceFileName);
     $usedColorsMap = [];
 
-    $colorName = function (string $colorCode, callable $formatting) use (&$colorsMap) {
+    $colorName = function (string $colorCode, callable $formatting) use (&$colorsMap, &$usedColorsMap) {
         $nonFormattedCode = $colorCode;
         $colorCode = $formatting($colorCode);
 
         if (key_exists($colorCode, $colorsMap)) {
+            if (!key_exists($colorCode, $usedColorsMap)) {
+                $usedColorsMap[$colorCode] = $colorsMap[$colorCode];
+            }
             return $colorsMap[$colorCode];
         }
 
@@ -146,5 +116,7 @@ function replaceColors(array $colorsMap, string $sourceFileName, string $targetF
             $textFromFile
         )
     );
+    uksort($usedColorsMap, fn(string $first, string $second): int => $first <=> $second);
+    return $usedColorsMap;
 }
 
