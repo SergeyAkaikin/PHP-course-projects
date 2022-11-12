@@ -2,24 +2,52 @@
 
 declare(strict_types=1);
 
-namespace App;
-require_once('Colors.php');
+namespace  App;
+
+require_once __DIR__ . '/../vendor/autoload.php';
+
+use App\DataAccess\ColorStorage;
+use App\DataAccess\TextStorage;
+use App\Services\ColorReplacer;
+use App\Utils\DataUtils;
 
 $colorsFile = '../resources/input/colors.txt';
-// reads colors from colors.txt
-$colorsMap = readColorsFromFile($colorsFile);
+$usedColorsFile = '../resources/output/used_colors.txt';
+
+$colorStorage = new ColorStorage(
+    DataUtils::readColorsSource($colorsFile),
+    DataUtils::writeDataSource($usedColorsFile)
+);
+
+$colorsMap = $colorStorage->readColorsMap();
+
 
 
 $sourceFile = '../resources/input/source.txt';
 $targetFile = '../resources/output/target.txt';
-// reads source.txt, replaces colors, writes target.txt, collects data about replaced colors
 
-$usedColorsMap = replaceColors($colorsMap, $sourceFile, $targetFile);
+$colorReplacer = new ColorReplacer();
 
 
-$usedColorsFile = fopen('../resources/output/used_colors.txt', 'w');
-// writes data about replaced colors
-foreach ($usedColorsMap as $key => $value) {
-    fwrite($usedColorsFile, $key . ' ' . $value . "\n");
+
+$sourceTextReader = DataUtils::readDataSource($sourceFile);
+$sourceTextWriter = DataUtils::writeDataSource($targetFile);
+
+$usedColorsMap = [];
+foreach ($sourceTextReader as $sourceText) {
+    $text = $colorReplacer->replaceColors($sourceText, $colorsMap, $usedColorsMap);
+    $sourceTextWriter->send($text);
 }
-fclose($usedColorsFile);
+
+$colorStorage->writeColorsMap($usedColorsMap);
+
+
+
+
+
+
+
+
+
+
+

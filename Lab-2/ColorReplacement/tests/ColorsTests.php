@@ -1,8 +1,11 @@
 <?php
 declare(strict_types=1);
 
-require_once '../src/Colors.php';
+require_once __DIR__ . '/../vendor/autoload.php';
 
+use App\DataAccess\ColorStorage;
+use App\Utils\DataUtils;
+use App\Services\ColorReplacer;
 use PHPUnit\Framework\TestCase;
 
 class ColorsTests extends TestCase
@@ -10,11 +13,14 @@ class ColorsTests extends TestCase
     /**
      * @dataProvider validInputColorFileProvider
      */
-
-
-    public function test_readColorsFromFile_correctColorsInFile_isFullColorMap(string $fileName, array $expectedResult): void
+    public function test_readColorsMap_validInputColors_isFullColorsMap(string $fileName, array $expectedResult): void
     {
-        $getResult = readColorsFromFile($fileName);
+        $colorsReader = new ColorStorage(
+            DataUtils::readColorsSource($fileName),
+            DataUtils::writeDataSource('stubFileName')
+        );
+
+        $getResult = $colorsReader->readColorsMap();
         $this->assertEquals($expectedResult, $getResult);
     }
 
@@ -27,15 +33,25 @@ class ColorsTests extends TestCase
         ];
     }
 
-    public function test_readColorsFromFile_noneCorrectColorsInFile_emptyColorMap(): void
+    public function test_readColorsMap_noneCorrectColorsInFile_emptyColorsMap(): void
     {
-        $getResult = readColorsFromFile('testFiles/testInput/colorsTestWithNoneCorrectValuesFile.txt');
+        $fileName = 'testFiles/testInput/colorsTestWithNoneCorrectValuesFile.txt';
+        $colorReader = new ColorStorage(
+            DataUtils::readColorsSource($fileName),
+            DataUtils::writeDataSource('stubFileName')
+        );
+        $getResult = $colorReader->readColorsMap();
         $this->assertEmpty($getResult);
     }
 
-    public function test_readColorsFromFile_incorrectAndCorrectColorsInFile_correctColorsMap(): void
+    public function test_readColorsMap_incorrectAndCorrectColorsInFile_correctColorsMap(): void
     {
-        $getResult = readColorsFromFile('testFiles/testInput/colorsTestWithDifferentFormatsFile.txt');
+        $fileName = 'testFiles/testInput/colorsTestWithDifferentFormatsFile.txt';
+        $colorsReader = new ColorStorage(
+            DataUtils::readColorsSource('testFiles/testInput/colorsTestWithDifferentFormatsFile.txt'),
+            DataUtils::writeDataSource('stubFileName')
+        );
+        $getResult = $colorsReader->readColorsMap();
         $expectedResult = ['#B8860B' => 'FirstCorrectColor', '#BC8F8F' => 'SecondCorrectColor', '#CD5C5C' => 'ThirdCorrectColor',
             '#CD853F' => 'FourthCorrectColor', '#DEB887' => 'FifthCorrectColor', '#F4A460' => 'SixthCorrectColor'];
         $this->assertEquals($expectedResult, $getResult);
@@ -44,18 +60,26 @@ class ColorsTests extends TestCase
     /**
      * @dataProvider validInputAndOutputFilesProvider
      */
-
     public function test_replaceColors_colorsWithDifferentFormatsToReplace_allColorsCorrectlyReplaced(
         array  $colorsMap,
         string $sourceFileName,
-        string $targetFileName,
         string $expectedOutPutFile
     ): void
     {
-        replaceColors($colorsMap, $sourceFileName, $targetFileName);
-        $expectedFileText = getFileText($expectedOutPutFile);
-        $getTargetFileText = getFileText($targetFileName);
-        $this->assertEquals($expectedFileText, $getTargetFileText);
+        $usedColorsMap = [];
+        $colorReplacer = new ColorReplacer();
+        $sourceReader = DataUtils::readDataSource($sourceFileName);
+        $replacedText = '';
+        foreach ($sourceReader as $sourceLine) {
+            $replacedText .= $colorReplacer->replaceColors($sourceLine, $colorsMap, $usedColorsMap);
+        }
+        $expectedFileReader = DataUtils::readDataSource($expectedOutPutFile);
+        $expectedText = '';
+        foreach ($expectedFileReader as $expectedLine) {
+            $expectedText .= $expectedLine;
+        }
+
+        $this->assertEquals($expectedText, $replacedText);
     }
 
     public function validInputAndOutputFilesProvider(): array
@@ -64,26 +88,9 @@ class ColorsTests extends TestCase
             [
                 ['#20B2AA' => 'FirstColor', '#CD5C5C' => 'SecondColor', '#8B4513' => 'ThirdColor', '#CD853F' => 'FourthColor', '#FF00FF' => 'FifthColor', '#FFFF00' => 'SixthColor'],
                 'testFiles/testInput/replaceTestSourceFile1.txt',
-                'testFiles/testOutput/resultTestFile1.txt',
                 'testFiles/testOutput/expectedFile1.txt'
             ]
         ];
     }
 
-    public function test_replaceColors_noneReplacedColors_emptyUsedColorsMap()
-    {
-        $getColorsMap = readColorsFromFile('testFiles/testInput/colorsTestWithCorrectValuesFile2.txt');
-        $getUsedColorsMap = replaceColors($getColorsMap, 'testFiles/testInput/replaceTestSourceFile2.txt', 'testFiles/testOutput/resultTestFile2.txt');
-        $this->assertEmpty($getUsedColorsMap);
-    }
-
-    public function test_replaceColors_correctSourceFile_correctUsedColorsMap()
-    {
-        $sourceFileName = 'testFiles/testInput/replaceTestSourceFile1.txt';
-        $targetFileName ='testFiles/testOutput/resultTestFile3.txt';
-        $colorsMap = ['#20B2AA' => 'FirstColor', '#CD5C5C' => 'SecondColor', '#8B4513' => 'ThirdColor', '#CD853F' => 'FourthColor', '#FF00FF' => 'FifthColor', '#FFFF00' => 'SixthColor'];
-        $expectedResult = ['#CD5C5C' => 'SecondColor', '#FF00FF' => 'FifthColor', '#CD853F' => 'FourthColor', '#20B2AA' => 'FirstColor', '#FFFF00' => 'SixthColor'];
-        $getResult = replaceColors($colorsMap, $sourceFileName, $targetFileName);
-        $this->assertEquals($expectedResult, $getResult);
-    }
 }
