@@ -15,13 +15,15 @@ final class Song
     private string $name = 'no name';
     private string $author = 'no author';
     private string $genre = 'no genre';
+    private string $textSong;
 
     /**
      * @param string $name
      * @param string $author
      * @param string $genre
+     * @param string $textSong = ''
      */
-    public function __construct(string $name, string $author, string $genre)
+    public function __construct(string $name, string $author, string $genre, string $textSong = '')
     {
         if ($author !== '') {
             $this->author = $author;
@@ -32,6 +34,8 @@ final class Song
         if ($genre !== '') {
             $this->genre = $genre;
         }
+
+        $this->textSong = $textSong;
 
     }
 
@@ -88,4 +92,19 @@ final class Song
         }
     }
 
+    /**
+     * @return string
+     */
+    public function getTextSong(): string
+    {
+        return $this->textSong;
+    }
+
+    /**
+     * @param string $textSong
+     */
+    public function setTextSong(string $textSong): void
+    {
+        $this->textSong = $textSong;
+    }
 }
