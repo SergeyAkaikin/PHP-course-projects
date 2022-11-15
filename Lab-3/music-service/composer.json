@@ -1,5 +1,5 @@
 {
-    "name": "codemastersintl/music-service",
+    "name": "sergey_akaykin/music-service",
     "type": "project",
     "require-dev": {
         "phpunit/phpunit": "^9.5",
@@ -8,7 +8,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Codemastersintl\\MusicService\\": "src/"
+            "MusicService\\": "src/"
         }
     },
     "require": {}
