@@ -23,7 +23,7 @@ final class SongNotification implements Notification
     public function __toString(): string
     {
         // TODO: Implement __toString() method.
-        return $this->artist->getUserName() . ' has published new song - ' . $this->song->getName() . "\n";
+        return $this->artist->getUserName() . ' published a new song - ' . $this->song->getName() . "\n";
     }
 
     public function getNotificationObject(): Song
