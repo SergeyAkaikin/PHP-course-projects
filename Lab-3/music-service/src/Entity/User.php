@@ -13,6 +13,7 @@ use MusicService\Entity\InvalidIFormatExceptions\UnableDateException;
 use MusicService\NotificationsService\Notification;
 use MusicService\NotificationsService\NotificationListener;
 use MusicService\Utils\UserUtils;
+use MusicService\Objects\Song;
 
 
 /**
@@ -24,6 +25,7 @@ use MusicService\Utils\UserUtils;
  * @property-read string $userName
  * @property string $password
  * @property Notification[] $notifications
+ * @property Song[] $playList
  */
 class User implements NotificationListener
 {
@@ -37,6 +39,7 @@ class User implements NotificationListener
     private string $password;
 
     private array $notificationsList;
+    private array $playList = [];
 
     /**
      * @param string $name
@@ -241,6 +244,33 @@ class User implements NotificationListener
     {
         while (!empty($this->notificationsList)) {
             yield array_pop($this->notificationsList);
+        }
+    }
+
+    /**
+     * @param Song $song
+     * @return void
+     */
+    public function addToPlayList(Song $song): void {
+        $this->playList[] = $song;
+    }
+
+    /**
+     * @param Song $song
+     * @return void
+     */
+    public function deleteFromPlayList(Song $song): void {
+        if (in_array($song, $this->playList, true)) {
+            $this->playList = array_diff($this->playList, [$song]);
+        }
+    }
+
+    /**
+     * @return Generator
+     */
+    public function getPlayList(): Generator {
+        foreach ($this->playList as $song) {
+            yield $song;
         }
     }
 }
