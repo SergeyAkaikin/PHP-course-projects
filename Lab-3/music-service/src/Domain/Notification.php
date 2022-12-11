@@ -2,6 +2,13 @@
 
 namespace MusicService\Domain;
 
+/**
+ * @property int $notificationId
+ * @property int $artistId
+ * @property int $listenerId
+ * @property string $notificationType
+ * @property int $itemId
+ */
 class Notification
 {
     public int $notificationId;
@@ -10,6 +17,13 @@ class Notification
     public string $notificationType;
     public int $itemId;
 
+    /**
+     * @param $notificationId
+     * @param $artistId
+     * @param $listenerId
+     * @param $notificationType
+     * @param $itemId
+     */
     public function __construct($notificationId, $artistId, $listenerId, $notificationType, $itemId)
     {
         $this->notificationId = $notificationId;
