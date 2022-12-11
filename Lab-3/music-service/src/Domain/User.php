@@ -2,46 +2,40 @@
 
 declare(strict_types=1);
 
-namespace MusicService\Entity;
+namespace MusicService\Domain;
 
 
-use Generator;
-use MusicService\Entity\InvalidIFormatExceptions\InvalidDateFormatException;
-use MusicService\Entity\InvalidIFormatExceptions\InvalidEmailFormatException;
-use MusicService\Entity\InvalidIFormatExceptions\InvalidPasswordFormatException;
-use MusicService\Entity\InvalidIFormatExceptions\UnableDateException;
-use MusicService\NotificationsService\Notification;
-use MusicService\NotificationsService\NotificationListener;
+use MusicService\Exceptions\InvalidDateFormatException;
+use MusicService\Exceptions\InvalidEmailFormatException;
+use MusicService\Exceptions\InvalidPasswordFormatException;
+use MusicService\Exceptions\UnableDateException;
 use MusicService\Utils\UserUtils;
-use MusicService\Objects\Song;
 
 
 /**
- * @property string $name
- * @property string $surname
- * @property string $patronymic
- * @property string $birthDate
- * @property string $email
+ * @property-read string $name
+ * @property-read string $surname
+ * @property-read string $patronymic
+ * @property-read string $birthDate
+ * @property-read  string $email
  * @property-read string $userName
  * @property string $password
- * @property Notification[] $notifications
- * @property Song[] $playList
  */
-class User implements NotificationListener
+class User
 {
-    private string $name;
-    private string $surname;
-    private string $patronymic;
+    public int $userId;
+    public string $name;
+    public string $surname;
+    public string $patronymic;
 
-    private string $birthDate;
-    private string $email;
-    public readonly string $userName;
+    public string $birthDate;
+    public string $email;
+    public string $userName;
     private string $password;
 
-    private array $notificationsList;
-    private array $playList = [];
 
     /**
+     * @param int $userId
      * @param string $name
      * @param string $surname
      * @param string $patronymic
@@ -54,8 +48,9 @@ class User implements NotificationListener
      * @throws UnableDateException;
      * @throws InvalidPasswordFormatException
      */
-    public function __construct(string $name, string $surname, string $patronymic, string $birthDate, string $email, string $userName, string $password)
+    public function __construct(int $userId, string $name, string $surname, string $patronymic, string $birthDate, string $email, string $userName, string $password)
     {
+        $this->userId = $userId;
         $this->name = $name;
         $this->surname = $surname;
         $this->patronymic = $patronymic;
@@ -92,61 +87,7 @@ class User implements NotificationListener
         return $this->userName;
     }
 
-    /**
-     * @return string
-     */
-    public function getBirthDate(): string
-    {
-        return $this->birthDate;
-    }
 
-    /**
-     * @return string
-     */
-    public function getEmail(): string
-    {
-        return $this->email;
-    }
-
-    /**
-     * @return string
-     */
-    public function getName(): string
-    {
-        return $this->name;
-    }
-
-    /**
-     * @return string
-     */
-    public function getPassword(): string
-    {
-        return $this->password;
-    }
-
-    /**
-     * @return string
-     */
-    public function getPatronymic(): string
-    {
-        return $this->patronymic;
-    }
-
-    /**
-     * @return string
-     */
-    public function getSurname(): string
-    {
-        return $this->surname;
-    }
-
-    /**
-     * @return string
-     */
-    public function getUserName(): string
-    {
-        return $this->userName;
-    }
 
     /**
      * @param string $birthDate
@@ -230,47 +171,5 @@ class User implements NotificationListener
         return password_verify($password, $this->password);
     }
 
-    /**
-     * @param Notification $notificationObject
-     * @return void
-     */
-    public function update(Notification $notificationObject): void
-    {
-        // TODO: Implement update() method.
-        $this->notificationsList[] = $notificationObject;
-    }
 
-    public function getUpdates(): Generator
-    {
-        while (!empty($this->notificationsList)) {
-            yield array_pop($this->notificationsList);
-        }
-    }
-
-    /**
-     * @param Song $song
-     * @return void
-     */
-    public function addToPlayList(Song $song): void {
-        $this->playList[] = $song;
-    }
-
-    /**
-     * @param Song $song
-     * @return void
-     */
-    public function deleteFromPlayList(Song $song): void {
-        if (in_array($song, $this->playList, true)) {
-            $this->playList = array_diff($this->playList, [$song]);
-        }
-    }
-
-    /**
-     * @return Generator
-     */
-    public function getPlayList(): Generator {
-        foreach ($this->playList as $song) {
-            yield $song;
-        }
-    }
 }

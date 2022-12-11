@@ -2,4 +2,3 @@
 vendor
 output
 .phpunit.result.cache
-/vendor/composer/
