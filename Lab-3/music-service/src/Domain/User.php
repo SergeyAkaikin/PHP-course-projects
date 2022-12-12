@@ -11,22 +11,24 @@ use MusicService\Exceptions\InvalidPasswordFormatException;
 use MusicService\Exceptions\UnableDateException;
 use MusicService\Utils\UserUtils;
 
-
 /**
- * @property-read string $name
- * @property-read string $surname
- * @property-read string $patronymic
- * @property-read string $birthDate
- * @property-read  string $email
- * @property-read string $userName
+ * @property int $id
+ * @property string $name
+ * @property string $surname
+ * @property string $lastname
+ * @property string $birthDate
+ * @property string $email
+ * @property string $userName
  * @property string $password
  */
+
 class User
 {
-    public int $userId;
+
+    public int $id;
     public string $name;
     public string $surname;
-    public string $patronymic;
+    public string $lastname;
 
     public string $birthDate;
     public string $email;
@@ -35,10 +37,10 @@ class User
 
 
     /**
-     * @param int $userId
+     * @param int $id
      * @param string $name
      * @param string $surname
-     * @param string $patronymic
+     * @param string $lastname
      * @param string $birthDate
      * @param string $email
      * @param string $userName
@@ -48,12 +50,12 @@ class User
      * @throws UnableDateException;
      * @throws InvalidPasswordFormatException
      */
-    public function __construct(int $userId, string $name, string $surname, string $patronymic, string $birthDate, string $email, string $userName, string $password)
+    public function __construct(int $id, string $name, string $surname, string $lastname, string $birthDate, string $email, string $userName, string $password)
     {
-        $this->userId = $userId;
+        $this->id = $id;
         $this->name = $name;
         $this->surname = $surname;
-        $this->patronymic = $patronymic;
+        $this->lastname = $lastname;
 
         if (!UserUtils::isValidDateFormat($birthDate)) {
             throw new InvalidDateFormatException('Invalid format of date', 1);
@@ -127,29 +129,6 @@ class User
         $this->email = $email;
     }
 
-    /**
-     * @param string $name
-     */
-    public function setName(string $name): void
-    {
-        $this->name = $name;
-    }
-
-    /**
-     * @param string $surname
-     */
-    public function setSurname(string $surname): void
-    {
-        $this->surname = $surname;
-    }
-
-    /**
-     * @param string $patronymic
-     */
-    public function setPatronymic(string $patronymic): void
-    {
-        $this->patronymic = $patronymic;
-    }
 
     /**
      * @return int

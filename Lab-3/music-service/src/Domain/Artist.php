@@ -5,16 +5,14 @@ declare(strict_types=1);
 namespace MusicService\Domain;
 
 
-use Generator;
 use MusicService\Exceptions\InvalidDateFormatException;
 use MusicService\Exceptions\InvalidEmailFormatException;
 use MusicService\Exceptions\InvalidPasswordFormatException;
 use MusicService\Exceptions\UnableDateException;
-use MusicService\Utils\SongUtils;
 
 /**
- * @property Song[] $songsList
- * @property Album[] $albumsList
+ * @property int[] $songsList
+ * @property int[] $albumsList
  */
 class Artist extends User
 {
@@ -23,7 +21,7 @@ class Artist extends User
 
 
     /**
-     * @param int $userId
+     * @param int $id
      * @param string $name
      * @param string $surname
      * @param string $patronymic
@@ -39,7 +37,7 @@ class Artist extends User
      * @throws UnableDateException
      */
     public function __construct(
-        int $userId,
+        int $id,
         string $name,
         string $surname,
         string $patronymic,
@@ -51,7 +49,7 @@ class Artist extends User
         array $albumsList
     )
     {
-        parent::__construct($userId, $name, $surname, $patronymic, $birthDate, $email, $userName, $password);
+        parent::__construct($id, $name, $surname, $patronymic, $birthDate, $email, $userName, $password);
         $this->albumsList = $albumsList;
         $this->songsList = $songsList;
     }
