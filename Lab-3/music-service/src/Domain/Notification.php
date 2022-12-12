@@ -11,22 +11,22 @@ namespace MusicService\Domain;
  */
 class Notification
 {
-    public int $notificationId;
+    public int $id;
     public int $artistId;
     public int $listenerId;
     public string $notificationType;
     public int $itemId;
 
     /**
-     * @param $notificationId
+     * @param $id
      * @param $artistId
      * @param $listenerId
      * @param $notificationType
      * @param $itemId
      */
-    public function __construct($notificationId, $artistId, $listenerId, $notificationType, $itemId)
+    public function __construct($id, $artistId, $listenerId, $notificationType, $itemId)
     {
-        $this->notificationId = $notificationId;
+        $this->id = $id;
         $this->artistId = $artistId;
         $this->listenerId = $listenerId;
         $this->notificationType = $notificationType;

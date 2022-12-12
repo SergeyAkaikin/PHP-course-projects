@@ -7,28 +7,28 @@ namespace MusicService\Domain;
 use Generator;
 
 /**
- * @property int $albumId
+ * @property int $id
  * @property int $authorId
  * @property string $name
  * @property int[] $songs
  */
 class Album
 {
-    public int $albumId;
+    public int $id;
     public int $authorId;
     public string $name;
     public array $songs;
 
 
     /**
-     * @param int $albumId
+     * @param int $id
      * @param int $authorId
      * @param string $name
      * @param array $songs
      */
-    public function __construct(int $albumId, int $authorId, string $name, array &$songs)
+    public function __construct(int $id, int $authorId, string $name, array &$songs)
     {
-        $this->albumId = $albumId;
+        $this->id = $id;
         $this->authorId = $authorId;
         $this->name = $name;
         $this->songs = $songs;
