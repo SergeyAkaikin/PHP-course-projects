@@ -32,6 +32,17 @@ class SongController extends BaseController
         return $this->successResponse($song);
     }
 
+    public function getAlbumSongs(GetByIdRequest $request): Response
+    {
+        $body = $request->getModel();
+        $songs = $this->songRepository->getSongsIdByAlbumId($body->id);
+        if (count($songs) === 0) {
+            return $this->failResponse(Status::NotFound, 'Album not found');
+        }
+
+        return $this->successResponse($songs);
+    }
+
     public function deleteSong(GetByIdRequest $request): Response
     {
         $body = $request->getModel();

@@ -29,7 +29,7 @@ $playListController = new PlaylistController(new PlaylistRepository(PdoFactory::
 $routes = [
     Route::createGet('/api/users/all', [$userController, 'getUsers']),
     Route::createGet('/api/users', [$userController, 'getUser']),
-    Route::createGet('/api/users/delete', [$userController, 'deleteUser']),
+    Route::createGet('/api/users/{id}/delete', [$userController, 'deleteUser']),
     Route::createPost('/api/users/put', [$userController, 'putUser']),
     Route::createGet('/api/songs/all', [$songController, 'getSongs']),
     Route::createGet('/api/songs', [$songController, 'getSong']),
@@ -50,6 +50,7 @@ $routes = [
     Route::createGet('/api/playlists/delete/songs', [$playListController, 'deleteSongFromPlaylist']),
     Route::createPost('/api/playlists/put', [$playListController, 'putPlaylist']),
     Route::createPost('/api/playlists/put/songs', [$playListController, 'putSongToPlaylist']),
+    Route::createGet('/api/albums/songs', [$songController, 'getAlbumSongs']),
 
 
 ];
@@ -80,6 +81,5 @@ $pipeline = new Pipeline(
 
 
 $response = $pipeline->handle($request);
-
 echo json_encode($response);
 

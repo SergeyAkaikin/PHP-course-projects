@@ -38,6 +38,22 @@ class SongRepository
         return (new \JsonMapper())->map($statement->fetch(), new Song());
     }
 
+    /**
+     * @param int $album_id
+     * @return int[]
+     */
+    public function getSongsIdByAlbumId(int $album_id): array
+    {
+        $sql = 'select song_id from album_songs where album_id = ?';
+        $statement = $this->pdo->prepare($sql);
+        $statement->execute([$album_id]);
+        return array_map(
+            static fn ($row): int => (int)$row[0],
+            $statement->fetchAll(PDO::FETCH_NUM),
+        );
+
+    }
+
     public function deleteSong(int $id): void
     {
         $sql = 'delete from song where id=?;';
