@@ -1,0 +1,22 @@
+{
+    "name": "sergey_akaykin/music-service",
+    "type": "project",
+    "require": {
+        "php": "^8.1",
+        "ext-pdo": "*",
+        "nesbot/carbon": "^2.66",
+        "netresearch/jsonmapper": "^4.1",
+        "vlucas/phpdotenv": "^5.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "SergeyAkaykin\\MusicService\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Sergey Akaikin",
+            "email": "akaikin02@mail.ru"
+        }
+    ]
+}
