@@ -17,20 +17,13 @@ class AlbumRepository
      */
     public function getAlbums(): array
     {
-        $sql = 'select id from album;';
-        $statement = $this->pdo->prepare($sql);
-        $statement->execute();
-        $albumsId = $statement->fetchAll();
-        $statement->closeCursor();
-        $albums = [];
-        foreach ($albumsId as $album) {
-            $albumObj = $this->getAlbum($album->id);
-            if ($albumObj !== null) {
-                $albums[] = $albumObj;
-            }
-        }
-
-        return $albums;
+        $sql = 'select * from album;';
+        $statement = $this->pdo->query($sql);
+        $mapper = new \JsonMapper();
+        return array_map(
+            static fn ($row): Album => $mapper->map($row, new Album()),
+            $statement->fetchAll()
+        );
     }
 
     public function getAlbum(int $id): ?Album
@@ -38,17 +31,10 @@ class AlbumRepository
         $sql = 'select * from album where id = ?;';
         $statement = $this->pdo->prepare($sql);
         $statement->execute([$id]);
-        $album = $statement->fetch();
-        $statement->closeCursor();
-        if ($album !== false) {
-            $sql = 'select song_id from album_songs where album_id = ?';
-            $statement = $this->pdo->prepare($sql);
-            $statement->execute([$album->id]);
-            $songs = $statement->fetchAll();
-            return Album::createAlbum($album->id, $album->artist_id, $album->title, $songs);
+        if ($statement->rowCount() === 0) {
+            return null;
         }
-
-        return null;
+        return (new \JsonMapper())->map($statement->fetch(), new Album());;
     }
 
     public function deleteAlbum(int $id): void {
