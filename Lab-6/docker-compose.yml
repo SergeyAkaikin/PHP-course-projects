@@ -25,7 +25,7 @@ services:
       - "api.music.internal:172.15.0.3"
     volumes:
       - ./:/var/www/api-music
-      - ./configs/nginx/conf.d:/etc/nginx/templates/
+      - ./docker/nginx/conf.d:/etc/nginx/templates/
 
   api-music:
     build:

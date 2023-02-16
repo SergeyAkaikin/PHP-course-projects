@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Repositories;
 
 use App\Models\Playlist;
+use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
@@ -12,24 +13,24 @@ class PlaylistRepository
 
     public function getPlaylists(): Collection
     {
-        return DB::table('playlist')->get();
+
+        return Playlist::query()->get();;
     }
 
     public function getPlaylist(int $id): ?Playlist
     {
-        $playlist = DB::table('playlist')->find($id);
-        return ($playlist === null) ? null : (new \JsonMapper())->map($playlist, new Playlist());
+        return Playlist::query()->find($id);
     }
 
 
     public function getPlaylistsByUserId(int $user_id): Collection
     {
-        return DB::table('playlist')->where('user_id', '=', $user_id)->get();
+        return DB::table('playlists')->where('user_id', '=', $user_id)->get();
     }
 
     public function deletePlaylist(int $id): void
     {
-        DB::table('playlist')->delete($id);
+        DB::table('playlists')->delete($id);
     }
 
     public function deleteSongFromPlaylist(int $playlist_id, int $song_id): void
@@ -42,9 +43,9 @@ class PlaylistRepository
 
     public function putPlaylist(int $user_id, string $title): void
     {
-        DB::table('playlist')
+        DB::table('playlists')
             ->insert([
-                ['user_id' => $user_id, 'title' => $title],
+                ['user_id' => $user_id, 'title' => $title, 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
             ]);
     }
 
@@ -52,16 +53,17 @@ class PlaylistRepository
     {
         DB::table('playlist_songs')
             ->insert([
-                ['playlist_id' => $playlist_id, 'song_id' => $song_id],
+                ['playlist_id' => $playlist_id, 'song_id' => $song_id, 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
             ]);
     }
 
     public function updatePlaylist(int $id, string $title): void
     {
-        DB::table('playlist')
+        DB::table('playlists')
             ->where('id', '=', $id)
             ->update([
-                'title' => $title
+                'title' => $title,
+                'updated_at' => Carbon::now()
             ]);
     }
 

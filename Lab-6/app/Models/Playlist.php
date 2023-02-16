@@ -1,13 +1,11 @@
 <?php
-declare(strict_types=1);
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
-class Playlist
+class Playlist extends Model
 {
-    public int $id;
-    public int $user_id;
-    public string $title;
-
+    use HasFactory;
 }

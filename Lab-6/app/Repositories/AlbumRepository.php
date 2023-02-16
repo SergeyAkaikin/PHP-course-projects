@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Repositories;
 
 use App\Models\Album;
+use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use JsonMapper;
@@ -14,32 +15,32 @@ class AlbumRepository
 
     public function getAlbums(): Collection
     {
-        return DB::table('album')->get();
+        return Album::query()->get();
     }
 
     public function getAlbum(int $id): ?Album
     {
-        $album = DB::table('album')->find($id);
-        return ($album === null) ? null : (new JsonMapper())->map($album, new Album());
+        return Album::query()->find($id);
     }
 
     public function deleteAlbum(int $id): void
     {
-        DB::table('album')->delete($id);
+        Album::query()->where('id', '=', $id)->delete();
     }
 
     public function putAlbum(int $artist_id, string $title): void
     {
-        DB::table('album')->insert([
-            ['artist_id' => $artist_id, 'title' => $title],
+        DB::table('albums')->insert([
+            ['artist_id' => $artist_id, 'title' => $title, 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
         ]);
     }
 
     public function updateAlbum(int $id, int $artist_id, string $title): void
     {
-        DB::table('album')->where('id', '=', $id)->update([
+        DB::table('albums')->where('id', '=', $id)->update([
             'artist_id' => $artist_id,
             'title' => $title,
+            'updated_at' => Carbon::now()
         ]);
     }
 

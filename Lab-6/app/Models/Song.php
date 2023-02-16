@@ -1,14 +1,11 @@
 <?php
-declare(strict_types=1);
 
 namespace App\Models;
 
-class Song
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class Song extends Model
 {
-    public int $id;
-    public int $artist_id;
-    public string $title;
-    public string $genre;
-
-
+    use HasFactory;
 }

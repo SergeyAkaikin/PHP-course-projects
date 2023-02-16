@@ -2,6 +2,8 @@
 
 namespace Database\Seeders;
 
+use App\Models\Song;
+use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -14,30 +16,14 @@ class SongSeeder extends Seeder
      */
     public function run()
     {
-        DB::statement("insert into song(artist_id, title, genre)
-                        select id, 'rain', 'rock'
-                        from artist
-                        where user_name = 'tucha'");
-        DB::statement("insert into song(artist_id, title, genre)
-                                select id, 'fire', 'pop'
-                                from artist
-                                where user_name = 'spirit'");
-        DB::statement("insert into song(artist_id, title, genre)
-                                select id, 'maybe', 'rap'
-                                from artist
-                                where user_name = 'lil_freedom'");
-        DB::statement("insert into song(artist_id, title, genre)
-                                select id, 'Do not interrupt', 'pop'
-                                from artist
-                                where user_name = 'nyusha'");
-        DB::statement("insert into song(artist_id, title, genre)
-                                select id, 'Choose a miracle', 'pop'
-                                from artist
-                                where user_name = 'nyusha'");
-        DB::statement("insert into song(artist_id, title, genre)
-                                select id, 'I melt', 'pop'
-                                from artist
-                                where user_name = 'nyusha'");
+        $created = Carbon::now();
+        $updated = Carbon::now();
+        Song::factory()->create(['artist_id' => 1, 'title' => 'rain', 'genre' => 'rock', 'created_at' => $created, 'updated_at' => $updated]);
+        Song::factory()->create(['artist_id' => 2, 'title' => 'fire', 'genre' => 'pop', 'created_at' => $created, 'updated_at' => $updated]);
+        Song::factory()->create(['artist_id' => 3, 'title' => 'maybe', 'genre' => 'rap', 'created_at' => $created, 'updated_at' => $updated]);
+        Song::factory()->create(['artist_id' => 4, 'title' => 'Do not interrupt', 'genre' => 'pop', 'created_at' => $created, 'updated_at' => $updated]);
+        Song::factory()->create(['artist_id' => 4, 'title' => 'Choose a miracle', 'genre' => 'pop', 'created_at' => $created, 'updated_at' => $updated]);
+        Song::factory()->create(['artist_id' => 4, 'title' => 'I melt', 'genre' => 'pop', 'created_at' => $created, 'updated_at' => $updated]);
 
     }
 }

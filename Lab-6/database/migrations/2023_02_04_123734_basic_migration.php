@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('user', function (Blueprint $table) {
+        Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string('name');
             $table->string('surname');
@@ -21,8 +21,11 @@ return new class extends Migration
             $table->date('birth_date');
             $table->string('email');
             $table->string('user_name')->unique();
+            $table->timestamp('created_at');
+            $table->timestamp('updated_at');
+            $table->timestamp('deleted_at')->nullable();
         });
-        Schema::create('artist', function (Blueprint $table) {
+        Schema::create('artists', function (Blueprint $table) {
             $table->id();
             $table->string('name');
             $table->string('surname');
@@ -30,52 +33,70 @@ return new class extends Migration
             $table->date('birth_date');
             $table->string('email');
             $table->string('user_name')->unique();
+            $table->timestamp('created_at');
+            $table->timestamp('updated_at');
+            $table->timestamp('deleted_at')->nullable();
         });
-        Schema::create('song', function (Blueprint $table) {
+        Schema::create('songs', function (Blueprint $table) {
             $table->id();
             $table->foreignId( 'artist_id')
                 ->references('id')
-                ->on('artist')
+                ->on('artists')
                 ->onDelete('cascade');
             $table->string('title');
             $table->string('genre')->nullable();
+            $table->timestamp('created_at');
+            $table->timestamp('updated_at');
+            $table->timestamp('deleted_at')->nullable();
         });
-        Schema::create('album', function (Blueprint $table) {
+        Schema::create('albums', function (Blueprint $table) {
             $table->id();
             $table->foreignId('artist_id')
                 ->references('id')
-                ->on('artist')
+                ->on('artists')
                 ->onDelete('cascade');
             $table->string('title');
+            $table->timestamp('created_at');
+            $table->timestamp('updated_at');
+            $table->timestamp('deleted_at')->nullable();
         });
         Schema::create('album_songs', function (Blueprint $table) {
             $table->id();
             $table->foreignId('album_id')
                 ->references('id')
-                ->on('album')
+                ->on('albums')
                 ->onDelete('cascade');
             $table->foreignId('song_id')
                 ->references('id')
-                ->on('song')
+                ->on('songs')
                 ->onDelete('cascade');
+            $table->timestamp('created_at');
+            $table->timestamp('updated_at');
+            $table->timestamp('deleted_at')->nullable();
         });
-        Schema::create('playlist', function (Blueprint $table) {
+        Schema::create('playlists', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')
                 ->references('id')
-                ->on('user')
+                ->on('users')
                 ->onDelete('cascade');
             $table->string('title');
+            $table->timestamp('created_at');
+            $table->timestamp('updated_at');
+            $table->timestamp('deleted_at')->nullable();
         });
         Schema::create('playlist_songs', function (Blueprint $table) {
             $table->id();
             $table->foreignId('playlist_id')
                 ->references('id')
-                ->on('playlist')
+                ->on('playlists')
                 ->onDelete('cascade');
             $table->foreignId('song_id')
                 ->references('id')
-                ->on('song');
+                ->on('songs');
+            $table->timestamp('created_at');
+            $table->timestamp('updated_at');
+            $table->timestamp('deleted_at')->nullable();
         });
     }
 
@@ -86,12 +107,12 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('user');
-        Schema::dropIfExists('artist');
-        Schema::dropIfExists('song');
-        Schema::dropIfExists('album');
+        Schema::dropIfExists('users');
+        Schema::dropIfExists('artists');
+        Schema::dropIfExists('songs');
+        Schema::dropIfExists('albums');
         Schema::dropIfExists('album_songs');
-        Schema::dropIfExists('playlist');
+        Schema::dropIfExists('playlists');
         Schema::dropIfExists('playlist_songs');
     }
 };

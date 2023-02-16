@@ -2,6 +2,8 @@
 
 namespace Database\Seeders;
 
+use App\Models\Playlist;
+use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -14,8 +16,9 @@ class PlaylistSeeder extends Seeder
      */
     public function run()
     {
-        DB::statement("insert into playlist(title, user_id)
-                                select 'my_playlist', id from user where user_name='ivan12'");
-        DB::statement("insert into playlist_songs(playlist_id, song_id) VALUES (1, 3)");
+        $created = Carbon::now()->subYear();
+        $updated = Carbon::now();
+        Playlist::factory()->create(['title' => 'my_playlist', 'user_id' => 1, 'created_at' => $created, 'updated_at' => $updated]);
+        DB::statement("insert into playlist_songs(playlist_id, song_id, created_at, updated_at) VALUES (1, 3, '{$created}', '{$updated}')");
     }
 }

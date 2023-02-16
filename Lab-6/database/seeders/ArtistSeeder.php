@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -14,14 +15,16 @@ class ArtistSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('artist')->insert([
+        DB::table('artists')->insert([
             [
                 'name' => 'Maksim',
                 'surname' => 'Tuchin',
                 'lastname' => 'Valerievich',
                 'birth_date' => '1998-09-20',
                 'email' => 'tuchin12@gmail.com',
-                'user_name' => 'tucha'
+                'user_name' => 'tucha',
+                'created_at' => Carbon::now()->subYears(10),
+                'updated_at' => Carbon::now(),
             ],
             [
                 'name' => 'Danil',
@@ -29,7 +32,9 @@ class ArtistSeeder extends Seeder
                 'lastname' => 'Vladimirovich',
                 'birth_date' => '2000-12-01',
                 'email' => 'spirit@mail.ru',
-                'user_name' => 'spirit'
+                'user_name' => 'spirit',
+                'created_at' => Carbon::now()->subYears(6),
+                'updated_at' => Carbon::now(),
             ],
             [
                 'name' => 'Denis',
@@ -37,7 +42,9 @@ class ArtistSeeder extends Seeder
                 'lastname' => 'Anatolievich',
                 'birth_date' => '1999-02-09',
                 'email' => 'freedom@gmail.com',
-                'user_name' => 'lil_freedom'
+                'user_name' => 'lil_freedom',
+                'created_at' => Carbon::now()->subYears(4),
+                'updated_at' => Carbon::now(),
             ],
             [
                 'name' => 'Nyusha',
@@ -45,7 +52,9 @@ class ArtistSeeder extends Seeder
                 'lastname' => 'Shurochkina',
                 'birth_date' => '1990-08-15',
                 'email' => 'nyusha@gmail.ru',
-                'user_name' => 'nyusha'
+                'user_name' => 'nyusha',
+                'created_at' => Carbon::now()->subYears(2),
+                'updated_at' => Carbon::now(),
             ]
         ]);
     }

@@ -1,22 +1,11 @@
 <?php
 
-declare(strict_types=1);
-
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
-use Carbon\Carbon;
-
-class User
+class User extends Model
 {
-
-    public int $id;
-    public string $name;
-    public string $surname;
-    public string $lastname;
-    public Carbon $birth_date;
-    public string $email;
-    public string $user_name;
-
-
+    use HasFactory;
 }

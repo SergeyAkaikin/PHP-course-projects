@@ -4,7 +4,7 @@ FROM php:8.1-fpm-alpine
 RUN docker-php-ext-install sockets opcache
 RUN docker-php-ext-install pdo pdo_mysql
 
-COPY configs/php/conf.d/opcache.ini /usr/local/etc/php/conf.d/opcache.ini
+COPY docker/php/conf.d/opcache.ini /usr/local/etc/php/conf.d/opcache.ini
 RUN echo 'memory_limit = -1' >> /usr/local/etc/php/conf.d/docker-php-memlimit.ini
 
 RUN mkdir -p /var/www/api-music/storage

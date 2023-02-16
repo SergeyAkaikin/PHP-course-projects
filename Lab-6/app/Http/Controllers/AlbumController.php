@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Requests\AlbumStoreRequest;
 use App\Models\Album;
 use App\Repositories\AlbumRepository;
+use Illuminate\Http\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 class AlbumController extends Controller
 {
@@ -39,12 +41,12 @@ class AlbumController extends Controller
     /**
      *
      * @param  int  $id
-     * @return \Illuminate\Http\JsonResponse
+     * @return \Illuminate\Http\Response
      */
     public function show($id)
     {
         $album = $this->repository->getAlbum($id);
-        return ($album === null) ? response()->json('Album not found', 404) : response()->json($this->repository->getAlbum($id));
+        return ($album === null) ? new Response('Album not found', 404) : response($album, 200);
     }
 
     /**

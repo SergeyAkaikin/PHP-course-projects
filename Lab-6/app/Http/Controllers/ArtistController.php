@@ -53,12 +53,12 @@ class ArtistController extends Controller
     /**
      *
      * @param int $id
-     * @return JsonResponse
+     * @return Response
      */
     public function show($id)
     {
         $artist = $this->repository->getArtist($id);
-        return ($artist === null) ? response()->json('Artist not found', 404) : response()->json($artist);
+        return ($artist === null) ? response('Artist not found', 404) : response($artist, 200);
     }
 
     /**

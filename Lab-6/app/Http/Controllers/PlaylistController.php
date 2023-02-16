@@ -45,12 +45,12 @@ class PlaylistController extends Controller
     /**
      *
      * @param  int  $id
-     * @return \Illuminate\Http\JsonResponse
+     * @return \Illuminate\Http\Response
      */
     public function show($id)
     {
         $playlist = $this->repository->getPlaylist($id);
-        return ($playlist === null) ? response()->json('Playlist not found', 404) : response()->json($playlist);
+        return ($playlist === null) ? response('Playlist not found', 404) : response($playlist, 200);
     }
 
     /**
@@ -68,7 +68,7 @@ class PlaylistController extends Controller
 
         $this->repository->updatePlaylist(
             $id,
-            $validated['title']
+            $validated['title'],
         );
 
         return response()->noContent();
@@ -85,11 +85,11 @@ class PlaylistController extends Controller
     }
 
     /**
-     * @return \Illuminate\Http\JsonResponse
+     * @return \Illuminate\Http\Response
      */
     public function showUserPlaylists(int $id)
     {
-        return response()->json($this->repository->getPlaylistsByUserId($id));
+        return response($this->repository->getPlaylistsByUserId($id));
     }
 
     /**
@@ -100,5 +100,13 @@ class PlaylistController extends Controller
         $validated = $request->validated();
         $this->repository->putSongToPlaylist($id, $validated['song_id']);
         return response()->noContent();
+    }
+    /**
+     * @return \Illuminate\Http\Response
+     */
+    public function deleteSongFromPlaylist(int $playlist_id, int $song_id)
+    {
+       $this->repository->deleteSongFromPlaylist($playlist_id, $song_id);
+       return response()->noContent();
     }
 }

@@ -40,7 +40,6 @@ Route::controller(ArtistController::class)->group(function () {
 });
 
 Route::controller(SongController::class)->group(function () {
-    Route::get('/album/{id}/songs', 'albumSongs')->whereNumber('id');
     Route::get('/songs', 'index');
     Route::get('/song/{id}', 'show')->whereNumber('id');
     Route::post('/song', 'store');
@@ -69,4 +68,5 @@ Route::controller(PlaylistController::class)->group(function () {
     Route::delete('/playlist/{id}', 'destroy')->whereNumber('id');
     Route::get('/user/{id}/playlists', 'showUserPlaylists')->whereNumber('id');
     Route::post('/playlist/{id}/song', 'putSongToPlaylist')->whereNumber('id');
+    Route::delete('/playlist/{playlist_id}/song/{song_id}', 'deleteSongFromPlaylist')->whereNumber(['playlist_id', 'song_id']);
 });

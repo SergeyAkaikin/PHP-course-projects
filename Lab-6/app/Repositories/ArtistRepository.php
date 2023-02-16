@@ -17,18 +17,17 @@ class ArtistRepository
 
     public function getArtists(): Collection
     {
-        return DB::table('artist')->get();
+        return Artist::query()->get();
     }
 
     public function getArtist(int $id): ?Artist
     {
-        $artist = DB::table('artist')->find($id);
-        return ($artist === null) ? null : (new JsonMapper())->map($artist, new Artist());
+        return Artist::query()->find($id);
     }
 
     public function deleteArtist(int $id): void
     {
-        DB::table('artist')->delete($id);
+        Artist::query()->where('id', '=', $id)->delete();
     }
 
     public function putArtist(
@@ -40,14 +39,16 @@ class ArtistRepository
         string $user_name
     ): void
     {
-        DB::table('artist')->insert([
+        DB::table('artists')->insert([
             [
                 'name' => $name,
                 'surname' => $surname,
                 'lastname' => $lastname,
                 'birth_date' => $birth_date,
                 'email' => $email,
-                'user_name' => $user_name
+                'user_name' => $user_name,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
             ]
         ]);
     }
@@ -62,7 +63,7 @@ class ArtistRepository
         string $user_name
     ): void
     {
-        DB::table('artist')
+        DB::table('artists')
             ->where('id', $id)
             ->update([
                 'name' => $name,
@@ -70,7 +71,8 @@ class ArtistRepository
                 'lastname' => $lastname,
                 'birth_date' => $birth_date,
                 'email' => $email,
-                'user_name' => $user_name
+                'user_name' => $user_name,
+                'updated_at' => Carbon::now()
             ]);
     }
 }
