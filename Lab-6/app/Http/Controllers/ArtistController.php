@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\UserStoreRequest;
 use App\Models\Artist;
 use App\Repositories\ArtistRepository;
+use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
 use JsonMapper;
@@ -37,12 +38,12 @@ class ArtistController extends Controller
         /**
          * @var Artist $data
          */
-        $data = (new JsonMapper())->map((object)$validated, new Artist());
+        $data = (object)$validated;
         $this->repository->putArtist(
             $data->name,
             $data->surname,
             $data->lastname,
-            $data->birth_date,
+            new Carbon($data->birth_date),
             $data->email,
             $data->user_name
         );
@@ -73,13 +74,13 @@ class ArtistController extends Controller
         /**
          * @var Artist $data
          */
-        $data = (new JsonMapper())->map((object)$validated, new Artist());
+        $data = (object)$validated;
         $this->repository->updateArtist(
             $id,
             $data->name,
             $data->surname,
             $data->lastname,
-            $data->birth_date,
+            new Carbon($data->birth_date),
             $data->email,
             $data->user_name
         );

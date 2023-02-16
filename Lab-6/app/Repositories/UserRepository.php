@@ -7,7 +7,6 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
-use JsonMapper;
 
 
 class UserRepository
@@ -17,18 +16,17 @@ class UserRepository
 
     public function getUsers(): Collection
     {
-        return DB::table('user')->get();
+        return User::query()->get();
     }
 
     public function getUser(int $id): ?User
     {
-        $user = DB::table('user')->find($id);
-        return ($user === null) ? null : (new JsonMapper())->map($user, new User());
+        return User::query()->find($id);
     }
 
     public function deleteUser(int $id): void
     {
-        DB::table('user')->delete($id);
+        User::query()->where('id', '=', $id)->delete();
     }
 
     public function putUser(
@@ -40,14 +38,16 @@ class UserRepository
         string $user_name
     ): void
     {
-        DB::table('user')->insert([
+        DB::table('users')->insert([
             [
                 'name' => $name,
                 'surname' => $surname,
                 'lastname' => $lastname,
                 'birth_date' => $birth_date,
                 'email' => $email,
-                'user_name' => $user_name
+                'user_name' => $user_name,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
             ]
         ]);
     }
@@ -62,7 +62,7 @@ class UserRepository
         string $user_name
     ): void
     {
-        DB::table('user')
+        DB::table('users')
             ->where('id', $id)
             ->update([
                 'name' => $name,
@@ -70,7 +70,8 @@ class UserRepository
                 'lastname' => $lastname,
                 'birth_date' => $birth_date,
                 'email' => $email,
-                'user_name' => $user_name
+                'user_name' => $user_name,
+                'updated_at' => Carbon::now()
             ]);
     }
 }

@@ -37,7 +37,7 @@ class SongController extends Controller
         /**
          * @var Song $song
          */
-        $song = (new \JsonMapper())->map((object)$validated, new Song());
+        $song = (object)$validated;
         $this->repository->putSong(
             $song->artist_id,
             $song->title,
@@ -69,7 +69,7 @@ class SongController extends Controller
         /**
          * @var Song $song
          */
-        $song = (new \JsonMapper())->map((object)$validated, new Song());
+        $song = (object)$validated;
         $this->repository->updateSong(
             $id,
             $song->artist_id,

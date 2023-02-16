@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\UserStoreRequest;
 use App\Models\User;
 use App\Repositories\UserRepository;
+use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
 use JsonMapper;
@@ -38,12 +39,12 @@ class UserController extends Controller
         /**
          * @var User $data
          */
-        $data = (new JsonMapper())->map((object)$validated, new User());
+        $data = (object)$validated;
         $this->repository->putUser(
             $data->name,
             $data->surname,
             $data->lastname,
-            $data->birth_date,
+            new Carbon($data->birth_date),
             $data->email,
             $data->user_name
         );
@@ -75,15 +76,15 @@ class UserController extends Controller
         /**
          * @var User $data
          */
-        $data = (new JsonMapper())->map((object)$validated, new User());
+        $data = (object)$validated;
         $this->repository->updateUser(
             $id,
             $data->name,
             $data->surname,
             $data->lastname,
-            $data->birth_date,
+            new Carbon($data->birth_date),
             $data->email,
-            $data->user_name
+            $data->user_name,
         );
         return response()->noContent();
     }

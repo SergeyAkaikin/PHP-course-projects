@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('surname');
             $table->string('lastname');
-            $table->date('birth_date');
+            $table->timestamp('birth_date');
             $table->string('email');
             $table->string('user_name')->unique();
             $table->timestamp('created_at');
@@ -30,7 +30,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('surname');
             $table->string('lastname');
-            $table->date('birth_date');
+            $table->timestamp('birth_date');
             $table->string('email');
             $table->string('user_name')->unique();
             $table->timestamp('created_at');

@@ -33,7 +33,7 @@ class AlbumController extends Controller
         /**
          * @var Album $album
          */
-        $album = (new \JsonMapper())->map((object)$validated, new Album());
+        $album = (object)$validated;
         $this->repository->putAlbum($album->artist_id, $album->title);
         return response()->noContent();
     }
@@ -61,7 +61,7 @@ class AlbumController extends Controller
         /**
          * @var Album $album
          */
-        $album = (new \JsonMapper())->map((object)$validated, new Album());
+        $album = (object)$validated;
         $this->repository->updateAlbum($id, $album->artist_id, $album->title);
         return response()->noContent();
     }

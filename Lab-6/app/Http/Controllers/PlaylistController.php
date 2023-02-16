@@ -33,7 +33,7 @@ class PlaylistController extends Controller
         /**
          * @var Playlist $playlist
          */
-        $playlist = (new \JsonMapper())->map((object)$validated, new Playlist());
+        $playlist = (object)$validated;
         $this->repository->putPlaylist(
             $playlist->user_id,
             $playlist->title
@@ -62,10 +62,6 @@ class PlaylistController extends Controller
     public function update(PlaylistUpdateRequest $request, $id)
     {
         $validated = $request->validated();
-        /**
-         * @var Playlist $playlist
-         */
-
         $this->repository->updatePlaylist(
             $id,
             $validated['title'],
