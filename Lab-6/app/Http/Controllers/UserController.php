@@ -8,6 +8,7 @@ use App\Repositories\UserRepository;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Log;
 use JsonMapper;
 
 class UserController extends Controller
@@ -23,6 +24,7 @@ class UserController extends Controller
      */
     public function index()
     {
+        Log::info("All users info requested");
         $users = $this->repository->getUsers();
         return response($users, 200);
 
@@ -59,7 +61,7 @@ class UserController extends Controller
      */
     public function show($id)
     {
-
+        Log::info("User info requested", ['id' => $id]);
         $user = $this->repository->getUser($id);
         return ($user === null) ? response()->json('User not found', 404) : response()->json($user);
     }

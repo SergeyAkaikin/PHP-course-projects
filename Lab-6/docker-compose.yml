@@ -29,8 +29,9 @@ services:
 
   api-music:
     build:
-      context: ./
+      context: ./docker
       dockerfile: api-music.Dockerfile
+    restart: always
     container_name: api-music
     working_dir: /var/www/api-music
     networks:
@@ -43,6 +44,7 @@ services:
       - "mysql.docker.internal:172.15.0.4"
     volumes:
       - ./:/var/www/api-music
+      - api-music-storage:/var/www/api-music/storage
   db:
     image: mysql
     container_name: database
