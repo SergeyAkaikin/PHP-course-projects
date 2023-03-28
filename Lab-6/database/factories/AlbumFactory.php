@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -17,8 +18,10 @@ class AlbumFactory extends Factory
     public function definition()
     {
         return [
-            'artist_id' => 1,
+            'artist_id' => rand(5, 8),
             'title' => fake()->title(),
+            'created_at' => fake()->date(),
+            'updated_at' => Carbon::now(),
         ];
     }
 }

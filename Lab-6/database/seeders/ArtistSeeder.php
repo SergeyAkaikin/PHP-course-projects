@@ -1,21 +1,20 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Seeders;
 
 use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 class ArtistSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     *
-     * @return void
-     */
-    public function run()
+
+    public function run(): void
     {
-        DB::table('artists')->insert([
+        DB::table('users')->insert([
             [
                 'name' => 'Maksim',
                 'surname' => 'Tuchin',
@@ -25,6 +24,9 @@ class ArtistSeeder extends Seeder
                 'user_name' => 'tucha',
                 'created_at' => Carbon::now()->subYears(10),
                 'updated_at' => Carbon::now(),
+                'is_artist' => true,
+                'password' => Hash::make('secret'),
+                'roles' => 2
             ],
             [
                 'name' => 'Danil',
@@ -35,6 +37,9 @@ class ArtistSeeder extends Seeder
                 'user_name' => 'spirit',
                 'created_at' => Carbon::now()->subYears(6),
                 'updated_at' => Carbon::now(),
+                'is_artist' => true,
+                'password' => Hash::make('secret'),
+                'roles' => 2
             ],
             [
                 'name' => 'Denis',
@@ -45,6 +50,9 @@ class ArtistSeeder extends Seeder
                 'user_name' => 'lil_freedom',
                 'created_at' => Carbon::now()->subYears(4),
                 'updated_at' => Carbon::now(),
+                'is_artist' => true,
+                'password' => Hash::make('secret'),
+                'roles' => 2
             ],
             [
                 'name' => 'Nyusha',
@@ -55,6 +63,9 @@ class ArtistSeeder extends Seeder
                 'user_name' => 'nyusha',
                 'created_at' => Carbon::now()->subYears(2),
                 'updated_at' => Carbon::now(),
+                'is_artist' => true,
+                'password' => Hash::make('secret'),
+                'roles' => 2
             ]
         ]);
     }

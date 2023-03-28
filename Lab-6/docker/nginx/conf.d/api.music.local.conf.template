@@ -16,7 +16,7 @@ server {
         try_files $uri $uri/ /index.php?$query_string;
     }
 
-    location ~* \.(jpg|jpeg|png)$ {
+    location ~* \.(jpg|jpeg|png|css|js)$ {
         add_header Access-Control-Allow-Origin *;
     }
 
@@ -27,7 +27,7 @@ server {
     error_log  /var/log/nginx/api.music.local-error.log error;
 
     sendfile off;
-
+    client_max_body_size 100M;
     location ~ \.php$ {
         fastcgi_split_path_info ^(.+\.php)(/.+)$;
         fastcgi_pass api.music.internal:9000;

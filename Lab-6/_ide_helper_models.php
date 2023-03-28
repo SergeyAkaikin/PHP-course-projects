@@ -20,6 +20,7 @@ namespace App\Models{
  * @property \Illuminate\Support\Carbon $created_at
  * @property \Illuminate\Support\Carbon $updated_at
  * @property string|null $deleted_at
+ * @property int|null $rating
  * @method static \Database\Factories\AlbumFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder|Album newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Album newQuery()
@@ -28,41 +29,11 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|Album whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Album whereDeletedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Album whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Album whereRating($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Album whereTitle($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Album whereUpdatedAt($value)
  */
 	class Album extends \Eloquent {}
-}
-
-namespace App\Models{
-/**
- * App\Models\Artist
- *
- * @property int $id
- * @property string $name
- * @property string $surname
- * @property string $lastname
- * @property string $birth_date
- * @property string $email
- * @property string $user_name
- * @property \Illuminate\Support\Carbon $created_at
- * @property \Illuminate\Support\Carbon $updated_at
- * @property string|null $deleted_at
- * @method static \Illuminate\Database\Eloquent\Builder|Artist newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Artist newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|Artist query()
- * @method static \Illuminate\Database\Eloquent\Builder|Artist whereBirthDate($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Artist whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Artist whereDeletedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Artist whereEmail($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Artist whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Artist whereLastname($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Artist whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Artist whereSurname($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Artist whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Artist whereUserName($value)
- */
-	class Artist extends \Eloquent {}
 }
 
 namespace App\Models{
@@ -129,6 +100,9 @@ namespace App\Models{
  * @property \Illuminate\Support\Carbon $created_at
  * @property \Illuminate\Support\Carbon $updated_at
  * @property string|null $deleted_at
+ * @property int|null $is_artist
+ * @property string|null $password
+ * @property int|null $roles
  * @method static \Illuminate\Database\Eloquent\Builder|User newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|User newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|User query()
@@ -137,8 +111,11 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|User whereDeletedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereEmail($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereIsArtist($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereLastname($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User wherePassword($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereRoles($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereSurname($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereUserName($value)

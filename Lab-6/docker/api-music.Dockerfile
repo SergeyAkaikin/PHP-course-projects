@@ -1,11 +1,7 @@
-FROM php:8.1-fpm-alpine
+FROM php:8.2-fpm
 
 # Installing php extensions
-RUN docker-php-ext-install sockets opcache
-RUN docker-php-ext-install pdo pdo_mysql
-
-COPY php/conf.d/opcache.ini /usr/local/etc/php/conf.d/opcache.ini
-RUN echo 'memory_limit = -1' >> /usr/local/etc/php/conf.d/docker-php-memlimit.ini
+RUN docker-php-ext-install opcache pdo_mysql
 
 RUN mkdir -p /var/www/api-music/storage
 
@@ -17,4 +13,5 @@ RUN mkdir -p /var/www/api-music/storage/framework \
 
 
 RUN chown -R www-data:www-data /var/www/api-music/storage
+
 

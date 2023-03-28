@@ -7,7 +7,6 @@ use App\Models\Song;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
-use JsonMapper;
 
 class SongRepository
 {
@@ -18,38 +17,52 @@ class SongRepository
         return Song::query()->get();
     }
 
-    public function getSong(int $id): ?Song
+    public function getSong(int $song_id): ?Song
     {
 
-        return Song::query()->find($id);
+        return Song::query()->find($song_id);
 
     }
 
+    /**
+     * @return Collection<int, Song>
+     */
     public function getSongsByAlbum(int $album_id): Collection
     {
-        return DB::table('album_songs')
-            ->join('songs', 'album_songs.song_id', '=', 'songs.id')
+        return Song::query()
+            ->join('album_songs', 'album_songs.song_id', '=', 'songs.id')
             ->where('album_songs.album_id', '=', $album_id)
-            ->select('songs.id as id', 'songs.artist_id as artist_id', 'songs.title as title', 'songs.genre as genre')
+            ->select(
+                'songs.id as id',
+                'songs.artist_id as artist_id',
+                'songs.title as title',
+                'songs.genre as genre',
+                'songs.created_at as created_at',
+                'songs.updated_at as updated_at',
+                'songs.deleted_at as deleted_at'
+            )
             ->get();
     }
 
+    /**
+     * @return Collection<int, Song>
+     */
     public function getSongsByArtist(int $artist_id): Collection
     {
-        return DB::table('songs')
+        return Song::query()
             ->where('artist_id', '=', $artist_id)
             ->select()
             ->get();
     }
 
-    public function deleteSong(int $id): void
+    public function deleteSong(int $song_id): bool
     {
-        DB::table('songs')->delete($id);
+        return (bool)DB::table('songs')->delete($song_id);
     }
 
-    public function putSong(int $artist_id, string $title, string $genre): void
+    public function putSong(int $artist_id, string $title, string $genre): int
     {
-        DB::table('songs')->insert([
+        return DB::table('songs')->insertGetId(
             [
                 'artist_id' => $artist_id,
                 'title' => $title,
@@ -57,40 +70,50 @@ class SongRepository
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now()
             ]
-        ]);
+        );
     }
 
-    public function putSongToAlbum(int $album_id, int $song_id): void
+    public function putSongToAlbum(int $album_id, int $song_id): int
     {
-        DB::table('album_songs')->insert([
+        return DB::table('album_songs')->insertGetId(
             [
                 'album_id' => $album_id,
                 'song_id' => $song_id,
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now()
             ]
-        ]);
+        );
     }
 
-    public function updateSong(int $id, int $artist_id, string $title, string $genre): void
+    public function updateSong(int $song_id, string $title, string $genre): bool
     {
-        DB::table('songs')
-            ->where('id', '=', $id)
+        return (bool)DB::table('songs')
+            ->where('id', '=', $song_id)
             ->update(
                 [
-                    'artist_id' => $artist_id,
                     'title' => $title,
                     'genre' => $genre,
                     'updated_at' => Carbon::now()
                 ]
             );
     }
-    public function getSongsFromPlaylist(int $id): Collection
+
+    /**
+     * @param int $id
+     * @return Collection<int, Song>
+     */
+    public function getSongsFromPlaylist(int $playlist_id): Collection
     {
         return DB::table('playlist_songs')
-            ->where('playlist_id', '=',$id)
+            ->where('playlist_id', '=', $playlist_id)
             ->join('songs', 'song_id', '=', 'songs.id')
             ->select('songs.id as id', 'artist_id', 'songs.title as title', 'genre')
             ->get();
+    }
+
+    public function getArtistId(int $song_id): ?int
+    {
+        $songIdObject = DB::table('songs')->where('id', '=', $song_id)->select('artist_id')->first();
+        return $songIdObject?->artist_id;
     }
 }

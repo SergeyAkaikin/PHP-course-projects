@@ -3,6 +3,7 @@ version: '3.9'
 volumes:
   api-music-storage:
   db-mysql:
+  redis:
 
 networks:
   c4_network:
@@ -42,6 +43,7 @@ services:
     extra_hosts:
       - "host.docker.internal:host-gateway"
       - "mysql.docker.internal:172.15.0.4"
+      - "redis.docker.local:172.15.0.5"
     volumes:
       - ./:/var/www/api-music
       - api-music-storage:/var/www/api-music/storage
@@ -62,3 +64,15 @@ services:
       - "3306:3306"
     volumes:
       - db-mysql:/var/lib/mysql
+  redis:
+      image: redis:6.2-alpine
+      restart: always
+      container_name: redis
+      networks:
+          c4_network:
+              ipv4_address: 172.15.0.5
+      ports:
+          - "6379:6379"
+      volumes:
+          -   redis:/data
+

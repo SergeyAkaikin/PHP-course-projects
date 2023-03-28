@@ -3,31 +3,29 @@ declare(strict_types=1);
 
 namespace App\Repositories;
 
-use App\Models\Artist;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
-use JsonMapper;
 
 
 class ArtistRepository
 {
 
 
-
     public function getArtists(): Collection
     {
-        return Artist::query()->get();
+        return User::query()->where('is_artist', '=', true)->get();
     }
 
-    public function getArtist(int $id): ?Artist
+    public function getArtist(int $artist_id): ?User
     {
-        return Artist::query()->find($id);
+        return User::query()->where('is_artist', '=', true)->find($artist_id);
     }
 
-    public function deleteArtist(int $id): void
+    public function deleteArtist(int $artist_id): bool
     {
-        Artist::query()->where('id', '=', $id)->delete();
+        return (bool)User::query()->where('is_artist', '=', true)->where('id', '=', $artist_id)->delete();
     }
 
     public function putArtist(
@@ -37,9 +35,9 @@ class ArtistRepository
         Carbon $birth_date,
         string $email,
         string $user_name
-    ): void
+    ): int
     {
-        DB::table('artists')->insert([
+        return DB::table('users')->insertGetId(
             [
                 'name' => $name,
                 'surname' => $surname,
@@ -48,23 +46,25 @@ class ArtistRepository
                 'email' => $email,
                 'user_name' => $user_name,
                 'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
+                'updated_at' => Carbon::now(),
+                'is_artist' => true
             ]
-        ]);
+        );
     }
 
     public function updateArtist(
-        int    $id,
+        int    $artist_id,
         string $name,
         string $surname,
         string $lastname,
         Carbon $birth_date,
         string $email,
-        string $user_name
-    ): void
+        string $user_name,
+    ): bool
     {
-        DB::table('artists')
-            ->where('id', $id)
+        return (bool)DB::table('users')
+            ->where('is_artist', '=', true)
+            ->where('id', '=', $artist_id)
             ->update([
                 'name' => $name,
                 'surname' => $surname,

@@ -1,19 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Seeders;
 
 use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 class UserSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     *
-     * @return void
-     */
-    public function run()
+
+    public function run(): void
     {
         DB::table('users')->insert([
             [
@@ -25,6 +24,8 @@ class UserSeeder extends Seeder
                 'user_name' => 'ivan12',
                 'created_at' => Carbon::now()->subYears(10),
                 'updated_at' => Carbon::now(),
+                'password' => Hash::make('secret'),
+                'roles' => 15
             ],
             [
                 'name' => 'Anton',
@@ -35,6 +36,8 @@ class UserSeeder extends Seeder
                 'user_name' => 'antonio',
                 'created_at' => Carbon::now()->subYears(6),
                 'updated_at' => Carbon::now(),
+                'password' => Hash::make('secret'),
+                'roles' => 7
             ],
             [
                 'name' => 'Viktor',
@@ -45,6 +48,8 @@ class UserSeeder extends Seeder
                 'user_name' => 'vekts666',
                 'created_at' => Carbon::now()->subYears(4),
                 'updated_at' => Carbon::now(),
+                'password' => Hash::make('secret'),
+                'roles' => 1
             ],
             [
                 'name' => 'Alena',
@@ -55,6 +60,8 @@ class UserSeeder extends Seeder
                 'user_name' => 'alenka',
                 'created_at' => Carbon::now()->subYears(2),
                 'updated_at' => Carbon::now(),
+                'password' => Hash::make('secret'),
+                'roles' => 1
             ]
         ]);
 

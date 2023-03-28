@@ -18,7 +18,7 @@ class PlaylistFactory extends Factory
     {
         return [
             'title' => fake()->title(),
-            'user_id' => 1,
+            'user_id' => rand(1, 5),
         ];
     }
 }

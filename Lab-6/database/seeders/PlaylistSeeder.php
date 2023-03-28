@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Seeders;
 
 use App\Models\Playlist;
@@ -9,12 +11,8 @@ use Illuminate\Support\Facades\DB;
 
 class PlaylistSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     *
-     * @return void
-     */
-    public function run()
+
+    public function run(): void
     {
         $created = Carbon::now()->subYear();
         $updated = Carbon::now();

@@ -14,10 +14,10 @@ class SongFactory extends Factory
      *
      * @return array<string, mixed>
      */
-    public function definition()
+    public function definition(): array
     {
         return [
-            'artist_id' => 1,
+            'artist_id' => rand(1, 4),
             'title' => fake()->title(),
             'genre' => fake()->text(),
         ];

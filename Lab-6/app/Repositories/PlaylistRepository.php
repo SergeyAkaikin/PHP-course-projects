@@ -14,57 +14,63 @@ class PlaylistRepository
     public function getPlaylists(): Collection
     {
 
-        return Playlist::query()->get();;
+        return Playlist::query()->get();
     }
 
-    public function getPlaylist(int $id): ?Playlist
+    public function getPlaylist(int $playlist_id): ?Playlist
     {
-        return Playlist::query()->find($id);
+        return Playlist::query()->find($playlist_id);
     }
 
 
     public function getPlaylistsByUserId(int $user_id): Collection
     {
-        return DB::table('playlists')->where('user_id', '=', $user_id)->get();
+        return Playlist::query()->where('user_id', '=', $user_id)->get();
     }
 
-    public function deletePlaylist(int $id): void
+    public function deletePlaylist(int $playlist_id): bool
     {
-        DB::table('playlists')->delete($id);
+        return (bool)Playlist::query()->where('id', '=', $playlist_id)->delete();
     }
 
-    public function deleteSongFromPlaylist(int $playlist_id, int $song_id): void
+    public function deleteSongFromPlaylist(int $playlist_id, int $song_id): bool
     {
-        DB::table('playlist_songs')
+        return (bool)DB::table('playlist_songs')
             ->where('playlist_id', '=', $playlist_id)
             ->where('song_id', '=', $song_id)
             ->delete();
     }
 
-    public function putPlaylist(int $user_id, string $title): void
+    public function putPlaylist(int $user_id, string $title): int
     {
-        DB::table('playlists')
-            ->insert([
+        return Playlist::query()
+            ->insertGetId(
                 ['user_id' => $user_id, 'title' => $title, 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
-            ]);
+            );
     }
 
-    public function putSongToPlaylist(int $playlist_id, int $song_id): void
+    public function putSongToPlaylist(int $playlist_id, int $song_id): int
     {
-        DB::table('playlist_songs')
-            ->insert([
+        return DB::table('playlist_songs')
+            ->insertGetId(
                 ['playlist_id' => $playlist_id, 'song_id' => $song_id, 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
-            ]);
+            );
     }
 
-    public function updatePlaylist(int $id, string $title): void
+    public function updatePlaylist(int $playlist_id, string $title): bool
     {
-        DB::table('playlists')
-            ->where('id', '=', $id)
+        return (bool)Playlist::query()
+            ->where('id', '=', $playlist_id)
             ->update([
                 'title' => $title,
                 'updated_at' => Carbon::now()
             ]);
     }
 
+    public function getUserId(int $playlist_id): ?int
+    {
+        $playlistIdObject = DB::table('playlists')->where('id', '=', $playlist_id)->select('user_id')->first();
+
+        return $playlistIdObject?->user_id;
+    }
 }

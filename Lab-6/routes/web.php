@@ -1,5 +1,9 @@
 <?php
 
+use App\Http\Controllers\Web\HomeController;
+use App\Http\Middleware\Authenticate;
+use App\Http\Middleware\Have;
+use App\Models\Permissions\PermissionCode;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,6 +17,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('greeting');
-});
+Route::get('/', [HomeController::class, 'index'])->middleware([Have::permissions(PermissionCode::AccessMusicCollection)]);
+Route::get('login', [HomeController::class, 'login'])->withoutMiddleware(Authenticate::class);
+Route::get('album/{album_id}', [HomeController::class, 'show'])
+    ->whereNumber('album_id')
+    ->middleware([Have::permissions(PermissionCode::AccessMusicCollection)]);
