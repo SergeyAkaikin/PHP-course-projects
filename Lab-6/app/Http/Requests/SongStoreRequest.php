@@ -19,12 +19,18 @@ class SongStoreRequest extends CommonFormRequest
             'artist_id' => 'required|integer',
             'title' => 'required|string',
             'genre' => 'required|string',
+            'file' => 'required|mimes:mp3',
         ];
     }
 
 
     public function body(): SongRequestModel
     {
-        return $this->innerBodyObject(new SongRequestModel());
+        $model = new SongRequestModel();
+        $model->title = $this->get('title');
+        $model->genre = $this->get('genre');
+        $model->artist_id = intval($this->get('artist_id'));
+        $model->file = $this->file('file');
+        return $model;
     }
 }

@@ -1,8 +1,10 @@
 @extends('layout')
 
 @section('header')
-    <header>
-    @yield('header_content')
+    <header id="header_list">
+        <h1>
+            @yield('header_content')
+        </h1>
     </header>
 @endsection
 
@@ -18,3 +20,5 @@
     <a class="contacts" href="tel:+79093297832">+79093297832</a>
     </footer>
 @endsection
+
+

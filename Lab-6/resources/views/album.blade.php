@@ -1,42 +1,43 @@
-@php use App\ViewModels\AlbumFullModel; @endphp
-    <!-- resources/views/album.blade.php -->
+<!-- resources/views/album.blade.php -->
 <?php
-/**
- * @var AlbumFullModel $album
- * @var bool $canManage
- * @var bool $canDelete
- */
-?>
-
+use Carbon\Carbon
+/** @var \App\ViewModels\AlbumFullModel $album*/ ?>
 @extends('base')
 
 
 @section('header_content')
-    <h1>Album page</h1>
+    Album page
 @endsection
 
 @section('main_content')
     <section>
         <h1 id="title">{{$album->title}}</h1>
-        <img src="" alt="album cover">
-        <p>Year - {{$album->date->year}}</p>
+        <img id="cover" src="" alt="album cover">
+        <p id="year">Year - {{$album->date}}</p>
+        <p id="artis_name" onclick="renderArtist({{$album->artist_id}})" style="cursor: pointer">Artist - {{$album->artist_name}}</p>
         <div class="songs_list">
             <h3>Songs:</h3>
-            <ul>
+            <ol id="song_list">
                 @foreach($album->songs as $i => $song)
-                    <li>{{$song->title}} - ({{$song->genre}})</li>
+                    <li id="song-{{$song->id}}">
+                        {{$song->title}} - {{$song->genre}}.<br>
+                        <audio src="http://minio.music.local:9005/audio/{{$song->path}}" controls></audio>
+                        @if($canDelete)
+                            <br>
+                            <button class="button" onclick="deleteSong({{$album->id}}, {{$song->id}})">Delete</button>
+                        @endif
+                    </li>
                 @endforeach
-            </ul>
+            </ol>
         </div>
         @if($canManage)
-            <input id="album_id" type="hidden" value="{{$album->id}}">
-            <a class="button" id="album_update">Update</a>
-            <a class="button" id="add_album_song">Add song</a>
+            <button class="button" id="album_update" onclick="renderUpdating({{$album->id}})">Update</button>
         @endif
         @if($canDelete)
-            <a class="button" id="album_delete" onclick="deleteAlbum({{$album->id}})">Delete</a>
+            <button class="button" id="album_delete" onclick="renderDeleting({{$album->id}})">Delete</button>
         @endif
     </section>
-    <script src="{{URL::asset('js/album.js')}}" defer></script>
 @endsection
-
+<script src="{{URL::asset('js/base.js')}}"></script>
+<script src="{{URL::asset('js/album.js')}}"></script>
+<script src="{{URL::asset('js/album_page.js')}}" defer></script>

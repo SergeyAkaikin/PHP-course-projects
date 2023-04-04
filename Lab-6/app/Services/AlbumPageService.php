@@ -13,24 +13,6 @@ use Illuminate\Support\Collection;
 
 class AlbumPageService
 {
-    public function canManage(Request $request, int $album_id): bool
-    {
-        /** @var AuthInfo $authInfo */
-        $authInfo = $request->attributes->get('authInfo');
-        if (in_array((string)PermissionCode::ManageAllMusicContent->value, $authInfo->permissions, true)) {
-            return true;
-        }
-
-
-        $idProvider = IdProviderManager::getAccessIdProvider(ContentType::Album->value);
-        $accessId = $idProvider->requestedResourceAccessId($album_id);
-        if ($accessId === $authInfo->user_id) {
-            return true;
-        }
-
-        return false;
-    }
-
     public function canDelete(Request $request, int $album_id): bool
     {
         /** @var AuthInfo $authInfo */
@@ -42,12 +24,27 @@ class AlbumPageService
         return $this->canManage($request, $album_id);
     }
 
+    public function canManage(Request $request, int $album_id): bool
+    {
+        /** @var AuthInfo $authInfo */
+        $authInfo = $request->attributes->get('authInfo');
+        if (in_array((string)PermissionCode::ManageAllMusicContent->value, $authInfo->permissions, true)) {
+            return true;
+        }
+
+
+        $idProvider = IdProviderManager::getAccessIdProvider(ContentType::Album->value);
+        $accessId = $idProvider->requestedResourceAccessId($album_id);
+
+        return $accessId === $authInfo->user_id;
+    }
+
     /**
      * @param Collection<int, AlbumFullModel> $albums
      * @return Collection<int, AlbumFullModel>
      */
     public function sortedByRate(Collection $albums): Collection
     {
-        return $albums->sortByDesc(fn (AlbumFullModel $model, int $key): int => $model->rating);
+        return $albums->sortByDesc(fn(AlbumFullModel $model, int $key): int => $model->rating);
     }
 }

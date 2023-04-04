@@ -15,6 +15,5 @@
 @yield('content')
 
 @yield('footer')
-<script src="{{URL::asset('js/album.js')}}" defer></script>
 </body>
 </html>

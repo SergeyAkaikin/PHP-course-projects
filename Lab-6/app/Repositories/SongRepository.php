@@ -39,7 +39,8 @@ class SongRepository
                 'songs.genre as genre',
                 'songs.created_at as created_at',
                 'songs.updated_at as updated_at',
-                'songs.deleted_at as deleted_at'
+                'songs.deleted_at as deleted_at',
+                'songs.path as path',
             )
             ->get();
     }
@@ -60,7 +61,7 @@ class SongRepository
         return (bool)DB::table('songs')->delete($song_id);
     }
 
-    public function putSong(int $artist_id, string $title, string $genre): int
+    public function putSong(int $artist_id, string $title, string $genre, string $path): int
     {
         return DB::table('songs')->insertGetId(
             [
@@ -68,7 +69,8 @@ class SongRepository
                 'title' => $title,
                 'genre' => $genre,
                 'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now()
+                'updated_at' => Carbon::now(),
+                'path' => $path,
             ]
         );
     }
@@ -99,7 +101,6 @@ class SongRepository
     }
 
     /**
-     * @param int $id
      * @return Collection<int, Song>
      */
     public function getSongsFromPlaylist(int $playlist_id): Collection
@@ -115,5 +116,12 @@ class SongRepository
     {
         $songIdObject = DB::table('songs')->where('id', '=', $song_id)->select('artist_id')->first();
         return $songIdObject?->artist_id;
+    }
+
+    public function deleteSongFromAlbum(int $album_id, int $song_id): bool
+    {
+        DB::table('album_songs')->where('album_id', '=', $album_id)
+            ->where('song_id', '=', $song_id)->delete();
+        return $this->deleteSong($song_id);
     }
 }

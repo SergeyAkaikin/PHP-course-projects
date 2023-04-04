@@ -1,0 +1,2 @@
+renderHeader();
+renderHome();

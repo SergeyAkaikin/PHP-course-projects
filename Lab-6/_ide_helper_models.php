@@ -21,6 +21,7 @@ namespace App\Models{
  * @property \Illuminate\Support\Carbon $updated_at
  * @property string|null $deleted_at
  * @property int|null $rating
+ * @property string|null $folder_id
  * @method static \Database\Factories\AlbumFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder|Album newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Album newQuery()
@@ -28,6 +29,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|Album whereArtistId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Album whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Album whereDeletedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Album whereFolderId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Album whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Album whereRating($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Album whereTitle($value)
@@ -71,6 +73,7 @@ namespace App\Models{
  * @property \Illuminate\Support\Carbon $created_at
  * @property \Illuminate\Support\Carbon $updated_at
  * @property string|null $deleted_at
+ * @property string|null $path
  * @method static \Database\Factories\SongFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder|Song newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Song newQuery()
@@ -80,6 +83,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|Song whereDeletedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Song whereGenre($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Song whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Song wherePath($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Song whereTitle($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Song whereUpdatedAt($value)
  */

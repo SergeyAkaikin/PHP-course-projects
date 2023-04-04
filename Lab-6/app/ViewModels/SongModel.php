@@ -9,4 +9,5 @@ class SongModel
     public int $artist_id;
     public string $title;
     public string $genre;
+    public ?string $path;
 }

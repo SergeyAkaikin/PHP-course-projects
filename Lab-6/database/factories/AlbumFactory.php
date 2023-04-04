@@ -22,6 +22,8 @@ class AlbumFactory extends Factory
             'title' => fake()->title(),
             'created_at' => fake()->date(),
             'updated_at' => Carbon::now(),
+            'folder_id' => uniqid(more_entropy: true),
+            'rating' => rand(0, 100),
         ];
     }
 }

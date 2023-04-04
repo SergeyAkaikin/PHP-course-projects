@@ -5,6 +5,7 @@ namespace App\Utils\Mappers;
 
 use App\Models\Album;
 use App\Models\Song;
+use App\Repositories\ArtistRepository;
 use App\ViewModels\AlbumFullModel;
 use App\ViewModels\AlbumModel;
 use App\ViewModels\SongModel;
@@ -18,7 +19,9 @@ class AlbumMapper
         $mapped->id = $album->id;
         $mapped->artist_id = $album->artist_id;
         $mapped->title = $album->title;
-        $mapped->date = $album->created_at;
+        $mapped->date = $album->created_at->year;
+        $mapped->rating = $album->rating;
+        $mapped->artist_name = (new ArtistRepository())->getArtist($album->artist_id)->user_name;
 
         return $mapped;
     }
@@ -32,9 +35,10 @@ class AlbumMapper
         $mapped->id = $album->id;
         $mapped->artist_id = $album->artist_id;
         $mapped->title = $album->title;
-        $mapped->date = $album->created_at;
+        $mapped->date = $album->created_at->year;
         $mapped->songCount = $songs->count();
         $mapped->rating = $album->rating;
+        $mapped->artist_name = (new ArtistRepository())->getArtist($album->artist_id)->user_name;
         $mapped->songs = $songs->map(fn(Song $song): SongModel => $this->mapSong($song))->toArray();
 
         return $mapped;
@@ -47,6 +51,7 @@ class AlbumMapper
         $mapped->artist_id = $song->artist_id;
         $mapped->title = $song->title;
         $mapped->genre = $song->genre;
+        $mapped->path = $song->path;
 
         return $mapped;
     }
