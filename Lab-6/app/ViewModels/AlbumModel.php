@@ -3,8 +3,6 @@ declare(strict_types=1);
 
 namespace App\ViewModels;
 
-use Carbon\Carbon;
-
 class AlbumModel
 {
     public int $id;

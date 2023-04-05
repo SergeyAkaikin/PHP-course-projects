@@ -22,6 +22,8 @@ use Carbon\Carbon
                     <li id="song-{{$song->id}}">
                         {{$song->title}} - {{$song->genre}}.<br>
                         <audio src="http://minio.music.local:9005/audio/{{$song->path}}" controls></audio>
+                        <br>
+                        <button id="add-song-{{$song->id}}" class="button" onclick="addSong({{$song->id}})">Add song</button>
                         @if($canDelete)
                             <br>
                             <button class="button" onclick="deleteSong({{$album->id}}, {{$song->id}})">Delete</button>

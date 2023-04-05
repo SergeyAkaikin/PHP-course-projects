@@ -11,7 +11,7 @@ use App\Models\Song;
 use App\Repositories\SongRepository;
 use App\Services\AudioService;
 use App\Services\CacheService;
-use App\Utils\Mappers\AlbumMapper;
+use App\Utils\Mappers\SongMapper;
 use App\ViewModels\SongModel;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
@@ -23,7 +23,7 @@ class SongController extends Controller
         private readonly SongRepository $repository,
         private readonly CacheService   $cacheService,
         private readonly AudioService   $audioService,
-        private readonly AlbumMapper    $albumMapper
+        private readonly SongMapper     $songMapper
     )
     {
     }
@@ -32,7 +32,7 @@ class SongController extends Controller
     public function index(): JsonResponse
     {
         Log::info('All songs information requested');
-        return response()->json($this->repository->getSongs()->map(fn (Song $song): SongModel => $this->albumMapper->mapSong($song)));
+        return response()->json($this->repository->getSongs()->map(fn(Song $song): SongModel => $this->songMapper->mapSong($song)));
     }
 
 
@@ -57,11 +57,11 @@ class SongController extends Controller
     public function show(int $song_id): Response|JsonResponse
     {
         Log::info('Song information requested', ['id' => $song_id]);
-        $song = $this->cacheService->getOrAdd("songs:{$song_id}", function() use ($song_id) {
+        $song = $this->cacheService->getOrAdd("songs:{$song_id}", function () use ($song_id) {
             $song = $this->repository->getSong($song_id);
-            return ($song === null) ? null : $this->albumMapper->mapSong($song);
+            return ($song === null) ? null : $this->songMapper->mapSong($song);
         }, 120);
-        return ($song === null) ? response()->json('Song not found', 404) : response($song, 200);
+        return ($song === null) ? response()->json('Song not found', 404) : response()->json($song);
     }
 
 
@@ -114,7 +114,7 @@ class SongController extends Controller
     {
         Log::info('All album songs information requested', ['id' => $album_id]);
         return response()->json($this->repository->getSongsByAlbum($album_id)
-            ->map(fn (Song $song): SongModel => $this->albumMapper->mapSong($song))
+            ->map(fn(Song $song): SongModel => $this->songMapper->mapSong($song))
         );
     }
 
@@ -123,7 +123,7 @@ class SongController extends Controller
     {
         Log::info('All artist songs information requested', ['id' => $artist_id]);
         return response()->json($this->repository->getSongsByArtist($artist_id)
-            ->map(fn (Song $song): SongModel => $this->albumMapper->mapSong($song))
+            ->map(fn(Song $song): SongModel => $this->songMapper->mapSong($song))
         );
     }
 
@@ -164,7 +164,7 @@ class SongController extends Controller
     {
         Log::info('All playlist songs information requested', ['id' => $playlist_id]);
         return response()->json($this->repository->getSongsFromPlaylist($playlist_id)
-            ->map(fn(Song $song): SongModel => $this->albumMapper->mapSong($song)));
+            ->map(fn(Song $song): SongModel => $this->songMapper->mapSong($song)));
     }
 
     public function deleteSongFromAlbum(int $album_id, int $song_id): JsonResponse|Response
@@ -174,5 +174,6 @@ class SongController extends Controller
         $this->audioService->deleteAudio($song->path);
         return $this->repository->deleteSongFromAlbum($album_id, $song_id) ? response()->json('Song or Album not found', 400) : response()->noContent();
     }
+
 
 }

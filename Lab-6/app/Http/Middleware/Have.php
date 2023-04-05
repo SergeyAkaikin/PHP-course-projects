@@ -31,10 +31,8 @@ class Have
 
         foreach ($permissionCodes as $permissionCode) {
             if (in_array($permissionCode, $authInfo->permissions, true)) {
-
-                if ($this->managementPermissionService->isRegularPermission(PermissionCode::from(intval($permissionCode)))) {
-                    $accessId = $request->attributes->get('requestedAccessId');
-
+                $accessId = $request->attributes->get('requestedAccessId');
+                if ($this->managementPermissionService->isRegularPermission(PermissionCode::from(intval($permissionCode))) && $accessId !== null) {
                     if ($authInfo->user_id === $accessId) {
                         return $next($request);
                     }

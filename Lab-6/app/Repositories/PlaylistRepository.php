@@ -73,4 +73,12 @@ class PlaylistRepository
 
         return $playlistIdObject?->user_id;
     }
+
+    public function getMainUserPlaylist(int $user_id): ?Playlist
+    {
+        return Playlist::query()->where('user_id', '=', $user_id)
+            ->where('title', '=', 'main')
+            ->first();
+    }
+
 }

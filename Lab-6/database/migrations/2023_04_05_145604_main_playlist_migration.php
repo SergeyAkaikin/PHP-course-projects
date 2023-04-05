@@ -11,8 +11,15 @@ return new class extends Migration {
      */
     public function up()
     {
-        DB::statement('create index songs_id on songs (id)');
-        DB::statement('create index songs_artists_id_index on songs (artist_id)');
+        DB::statement(
+            "
+            CREATE TRIGGER main_playlist_creator
+            AFTER INSERT
+            ON users
+            FOR EACH ROW
+            insert into playlists(user_id, title, created_at, updated_at) values(NEW.id, 'main', now(), now())
+            "
+        );
     }
 
     /**
@@ -22,7 +29,5 @@ return new class extends Migration {
      */
     public function down()
     {
-        DB::statement('drop index songs_id on albums');
-        DB::statement('drop index songs_artists_id_index on albums');
     }
 };

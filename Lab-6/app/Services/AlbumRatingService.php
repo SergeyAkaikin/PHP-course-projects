@@ -13,6 +13,6 @@ class AlbumRatingService
 
     public function getRankedList(Collection $albums): Collection
     {
-        return $albums->sortByDesc(fn (Album|AlbumModel|AlbumFullModel $album): int => $album->rating)->values();
+        return $albums->sortByDesc(fn(Album|AlbumModel|AlbumFullModel $album): int => $album->rating)->values();
     }
 }

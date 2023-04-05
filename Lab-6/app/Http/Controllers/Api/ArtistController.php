@@ -20,7 +20,7 @@ class ArtistController extends Controller
     public function __construct(
         private readonly ArtistRepository $repository,
         private readonly CacheService     $cacheService,
-        private readonly ArtistMapper $artistMapper,
+        private readonly ArtistMapper     $artistMapper,
     )
     {
     }
@@ -29,7 +29,7 @@ class ArtistController extends Controller
     public function index(): Response
     {
         Log::info('All artist information requested');
-        $artists = $this->repository->getArtists()->map(fn (User $artist): ArtistModel => $this->artistMapper->mapArtist($artist));
+        $artists = $this->repository->getArtists()->map(fn(User $artist): ArtistModel => $this->artistMapper->mapArtist($artist));
         return response($artists, 200);
 
     }
@@ -66,8 +66,8 @@ class ArtistController extends Controller
     public function show(int $artist_id): Response|JsonResponse
     {
         Log::info('Artist information requested', ['id' => $artist_id]);
-        $artist = $this->cacheService->getOrAdd("users:{$artist_id}", function () use($artist_id){
-            $artist =$this->repository->getArtist($artist_id);
+        $artist = $this->cacheService->getOrAdd("users:{$artist_id}", function () use ($artist_id) {
+            $artist = $this->repository->getArtist($artist_id);
             return ($artist === null) ? null : ($this->artistMapper->mapArtist($artist));
         }, 120);
         return ($artist === null) ? response()->json('Artist not found', 404) : response()->json($artist);

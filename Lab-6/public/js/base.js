@@ -6,8 +6,13 @@ let headerList = [
     {
         header: 'Artists',
         action: () => renderArtists(),
+    },
+    {
+        header: 'MySongs',
+        action: () => renderSongs()
     }
 ];
+
 function renderHeader() {
     let header = document.getElementById('header_list');
     let nav = document.createElement('ul');
@@ -48,10 +53,10 @@ async function renderArtists() {
     artistsElem.className = 'list';
     let artists = await fetch('/api/artists').then(response => response.json());
     artists.forEach(artist => {
-       let artistElem = document.createElement('li');
-       artistElem.innerText = artist.user_name;
-       artistElem.onclick = () => renderArtist(artist.id);
-       artistsElem.appendChild(artistElem);
+        let artistElem = document.createElement('li');
+        artistElem.innerText = artist.user_name;
+        artistElem.onclick = () => renderArtist(artist.id);
+        artistsElem.appendChild(artistElem);
     });
     content.appendChild(artistsElem);
 }
@@ -87,6 +92,35 @@ async function renderArtist(artist_id) {
 
     section.appendChild(songsElem);
     content.appendChild(section);
+}
+
+async function renderSongs() {
+    let content = document.getElementById('main_content');
+    content.innerHTML = '';
+    let section = document.createElement('section');
+    let h1 = document.createElement('h1');
+    h1.innerText = 'Added songs';
+    section.appendChild(h1);
+    let songsElem = document.createElement('ol');
+    songsElem.className = 'list';
+    let songs = await fetch('/api/users/songs').then(response => response.json());
+    songs.forEach(song => {
+        let songElem = document.createElement('li');
+        songElem.innerText = `${song.title} - ${song.genre}`;
+        let audio = document.createElement('audio');
+        audio.src = `http://minio.music.local:9005/audio/${song.path}`;
+        audio.controls = true;
+        songElem.appendChild(document.createElement('br'));
+        songElem.appendChild(audio);
+        songsElem.appendChild(songElem);
+    });
+    section.appendChild(songsElem);
+    content.appendChild(section);
+}
+async function addSong(song_id) {
+    fetch(`/api/users/songs/${song_id}`);
+    let button = document.getElementById(`add-song-${song_id}`);
+    button.disabled = true;
 }
 
 

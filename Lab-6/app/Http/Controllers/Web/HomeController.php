@@ -5,15 +5,14 @@ namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
 use App\Repositories\AlbumRepository;
+use App\Repositories\ArtistRepository;
 use App\Repositories\SongRepository;
 use App\Services\AlbumPageService;
 use App\Services\CacheService;
 use App\Utils\Mappers\AlbumMapper;
-use App\ViewModels\AlbumFullModel;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
-use JsonMapper;
 
 class HomeController extends Controller
 {
@@ -47,7 +46,8 @@ class HomeController extends Controller
 
 
                 $songs = $this->songRepository->getSongsByAlbum($album_id);
-                return (new AlbumMapper())->mapFullAlbum($album, $songs);
+                $artist_name = (new ArtistRepository())->getArtist($album->artist_id)->user_name;
+                return (new AlbumMapper())->mapFullAlbum($album, $songs, $artist_name);
 
             },
             120
@@ -58,8 +58,6 @@ class HomeController extends Controller
 
         return \view('album', ['album' => $album, 'canManage' => $canManage, 'canDelete' => $canDelete]);
     }
-
-
 
 
     public function login(): View

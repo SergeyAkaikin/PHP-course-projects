@@ -83,34 +83,44 @@ Route::middleware([Have::permissions(PermissionCode::AccessMusicCollection)])->g
     Route::get('/artists/{artist_id}/songs', [SongController::class, 'showArtistSongs'])->whereNumber('artist_id');
 
     Route::get('/albums/{album_id}/songs/{song_id}', [SongController::class, 'addAlbumSong'])->whereNumber(['album_id', 'song_id'])
-    ->middleware([Have::permissions(PermissionCode::UploadMusicContent)]);
-    Route::get('/playlists/{playlist_id}/songs', [SongController::class,'showPlaylistSongs'])->whereNumber('playlist_id');
+        ->middleware([Have::permissions(PermissionCode::UploadMusicContent)]);
+
+    Route::get('/playlists/{playlist_id}/songs', [SongController::class, 'showPlaylistSongs'])->whereNumber('playlist_id');
+
     Route::post('/albums/{album_id}/songs', [SongController::class, 'storeAlbumSong'])->whereNumber('album_id')
         ->middleware([
             WithManagement::accessTo(ContentType::Album, 'album_id'),
             Have::permissions(PermissionCode::UploadMusicContent, PermissionCode::ManageOwnAlbums)
         ]);
+
     Route::delete('/albums/{album_id}/songs/{song_id}', [SongController::class, 'deleteSongFromAlbum'])->whereNumber(['album_id', 'song_id'])
         ->middleware([
-           WithManagement::accessTo(ContentType::Album, 'album_id'),
-           Have::permissions(PermissionCode::ManageOwnAlbums, PermissionCode::ManageAllMusicContent)
+            WithManagement::accessTo(ContentType::Album, 'album_id'),
+            Have::permissions(PermissionCode::ManageOwnAlbums, PermissionCode::ManageAllMusicContent)
+        ]);
+
+    Route::get('/users/songs', [PlaylistController::class, 'showUserSongs']);
+    Route::get('/users/{user_id}/playlist', [PlaylistController::class, 'showMainUserPlaylist'])->whereNumber('user_id');
+    Route::get('/users/songs/{song_id}', [PlaylistController::class, 'putSongToMainPlaylist'])->whereNumber('song_id')
+        ->middleware([
+            Have::permissions(PermissionCode::ManageOwnLibrary)
         ]);
 
 
     Route::prefix('albums')->group(function () {
-       Route::get('', [AlbumController::class, 'index']);
-       Route::post('', [AlbumController::class, 'store'])->middleware([Have::permissions(PermissionCode::UploadMusicContent)]);
-       Route::prefix('{album_id}')->whereNumber('album_id')->group(function () {
-          Route::get('', [AlbumController::class, 'show']);
-          Route::delete('', [AlbumController::class, 'destroy'])->middleware([
-              WithManagement::accessTo(ContentType::Album, 'album_id'),
-              Have::permissions(PermissionCode::ManageAllMusicContent, PermissionCode::DeleteMusicContent, PermissionCode::ManageOwnAlbums)
-          ]);
-          Route::post('update', [AlbumController::class, 'update'])->middleware(
-              WithManagement::accessTo(ContentType::Album, 'album_id'),
-              Have::permissions(PermissionCode::ManageAllMusicContent, PermissionCode::ManageOwnAlbums),
-          );
-       });
+        Route::get('', [AlbumController::class, 'index']);
+        Route::post('', [AlbumController::class, 'store'])->middleware([Have::permissions(PermissionCode::UploadMusicContent)]);
+        Route::prefix('{album_id}')->whereNumber('album_id')->group(function () {
+            Route::get('', [AlbumController::class, 'show']);
+            Route::delete('', [AlbumController::class, 'destroy'])->middleware([
+                WithManagement::accessTo(ContentType::Album, 'album_id'),
+                Have::permissions(PermissionCode::ManageAllMusicContent, PermissionCode::DeleteMusicContent, PermissionCode::ManageOwnAlbums)
+            ]);
+            Route::post('update', [AlbumController::class, 'update'])->middleware(
+                WithManagement::accessTo(ContentType::Album, 'album_id'),
+                Have::permissions(PermissionCode::ManageAllMusicContent, PermissionCode::ManageOwnAlbums),
+            );
+        });
     });
 
 
@@ -122,7 +132,7 @@ Route::middleware([Have::permissions(PermissionCode::AccessMusicCollection)])->g
             Route::middleware([
                 WithManagement::accessTo(ContentType::Playlist, 'playlist_id'),
                 Have::permissions(PermissionCode::ManageAllMusicContent, PermissionCode::ManageOwnLibrary),
-            ])->group( function () {
+            ])->group(function () {
                 Route::post('update', [PlaylistController::class, 'update']);
                 Route::delete('', [ArtistController::class, 'destroy']);
             });
@@ -132,7 +142,7 @@ Route::middleware([Have::permissions(PermissionCode::AccessMusicCollection)])->g
                     Have::permissions(PermissionCode::ManageAllUsersInfo, PermissionCode::ManageOwnLibrary),
                 ])->group(function () {
                     Route::delete('', [PlaylistController::class, 'deleteSongFromPlaylist']);
-                    Route::post('', [PlaylistController::class, 'putSongToPlaylist']);
+                    Route::get('', [PlaylistController::class, 'putSongToPlaylist']);
                 });
         });
     });

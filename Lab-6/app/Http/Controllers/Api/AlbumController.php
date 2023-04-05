@@ -20,9 +20,9 @@ use Illuminate\Support\Facades\Log;
 class AlbumController extends Controller
 {
     public function __construct(
-        private readonly AlbumRepository $albumRepository,
-        private readonly CacheService    $cacheService,
-        private readonly AlbumMapper     $albumMapper,
+        private readonly AlbumRepository    $albumRepository,
+        private readonly CacheService       $cacheService,
+        private readonly AlbumMapper        $albumMapper,
         private readonly AlbumRatingService $albumRatingService,
     )
     {

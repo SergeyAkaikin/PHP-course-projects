@@ -30,6 +30,12 @@ class StorageService
 
         return $filePath;
     }
+
+    private function getClient(): S3Client
+    {
+        return new S3Client(config('aws'));
+    }
+
     public function removeAudio(string $audioPath): bool
     {
         $client = $this->getClient();
@@ -39,11 +45,6 @@ class StorageService
         ]);
 
         return $result['DeleteMarker'];
-    }
-
-    private function getClient(): S3Client
-    {
-        return new S3Client(config('aws'));
     }
 
 }
