@@ -19,25 +19,24 @@ use Carbon\Carbon
             <h3>Songs:</h3>
             <ol id="song_list">
                 @foreach($album->songs as $i => $song)
-                    <li id="song-{{$song->id}}">
-                        {{$song->title}} - {{$song->genre}}.<br>
-                        <audio src="http://minio.music.local:9005/audio/{{$song->path}}" controls></audio>
+                <li id="song-{{$song->id}}">
+                    {{$song->title}} - {{$song->genre}}.<br>
+                    <audio src="http://minio.music.local:9005/audio/{{$song->path}}" controls></audio>
+                    <br>
+                    <button id="add-song-{{$song->id}}" class="button" onclick="addSong({{$song->id}})">Add song</button>
+                        @if($canManage)
                         <br>
-                        <button id="add-song-{{$song->id}}" class="button" onclick="addSong({{$song->id}})">Add song</button>
-                        @if($canDelete)
-                            <br>
-                            <button class="button" onclick="deleteSong({{$album->id}}, {{$song->id}})">Delete</button>
+                        <button class="button" onclick="deleteSong({{$album->id}}, {{$song->id}})">Delete Song</button>
                         @endif
-                    </li>
+                </li>
                 @endforeach
             </ol>
         </div>
         @if($canManage)
-            <button class="button" id="album_update" onclick="renderUpdating({{$album->id}})">Update</button>
+        <button class="button" id="album_update" onclick="renderUpdating({{$album->id}})">Update</button>
+        <button class="button" id="album_delete" onclick="renderDeleting({{$album->id}})">Delete Album</button>
         @endif
-        @if($canDelete)
-            <button class="button" id="album_delete" onclick="renderDeleting({{$album->id}})">Delete</button>
-        @endif
+
     </section>
 @endsection
 <script src="{{URL::asset('js/base.js')}}"></script>

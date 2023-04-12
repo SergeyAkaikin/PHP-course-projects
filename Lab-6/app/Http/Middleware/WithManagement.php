@@ -2,8 +2,9 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Auth\AuthInfo;
 use App\Models\Permissions\ContentType;
-use App\Services\PermissionService\ManagementPermission\IdProviderManager;
+use App\Services\PermissionService\ManagementPermission\OwnerIdProviderResolver;
 use Closure;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -12,7 +13,7 @@ use Illuminate\Support\Facades\Log;
 
 class WithManagement
 {
-    public function __construct(private readonly IdProviderManager $permissionService)
+    public function __construct(private readonly OwnerIdProviderResolver $permissionService)
     {
     }
 
@@ -32,7 +33,7 @@ class WithManagement
     {
 
         $contentId = (int)$request->route($parameterName);
-        $accessIdProvider = $this->permissionService->getAccessIdProvider($contentType);
+        $accessIdProvider = $this->permissionService->getOwnerIdProvider($contentType);
 
         if ($accessIdProvider === null) {
             Log::critical(
@@ -42,13 +43,17 @@ class WithManagement
             return response(status: 500);
         }
 
-        $requestedAccessId = $accessIdProvider->requestedResourceAccessId($contentId);
+        $requestedAccessId = $accessIdProvider->getOwnerId($contentId);
 
         if ($requestedAccessId === null) {
             return response(status: 404);
         }
 
-        $request->attributes->add(['requestedAccessId' => $requestedAccessId]);
+        /** @var AuthInfo $authInfo */
+        $authInfo = $request->attributes->get('authInfo');
+        if ($authInfo->user_id !== $requestedAccessId) {
+            return response(status: 403);
+        }
 
         return $next($request);
     }

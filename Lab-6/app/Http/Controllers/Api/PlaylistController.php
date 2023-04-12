@@ -4,10 +4,9 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\BaseController;
 use App\Http\Requests\PlaylistStoreRequest;
 use App\Http\Requests\PlaylistUpdateRequest;
-use App\Models\Auth\AuthInfo;
 use App\Models\Playlist;
 use App\Models\Song;
 use App\Repositories\PlaylistRepository;
@@ -19,10 +18,9 @@ use App\ViewModels\PlaylistModel;
 use App\ViewModels\SongModel;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
 
-class PlaylistController extends Controller
+class PlaylistController extends BaseController
 {
     public function __construct(
         private readonly PlaylistRepository $repository,
@@ -33,7 +31,7 @@ class PlaylistController extends Controller
     {
     }
 
-    public function index(): JsonResponse
+    public function getPlaylists(): JsonResponse
     {
         Log::info('All playlists information requested');
         $playlist = $this->repository->getPlaylists();
@@ -42,7 +40,7 @@ class PlaylistController extends Controller
     }
 
 
-    public function store(PlaylistStoreRequest $request): JsonResponse
+    public function storePlaylist(PlaylistStoreRequest $request): JsonResponse
     {
 
         $playlist = $request->body();
@@ -62,7 +60,7 @@ class PlaylistController extends Controller
     }
 
 
-    public function show(int $playlist_id): JsonResponse
+    public function getPlaylist(int $playlist_id): JsonResponse
     {
         Log::info('Playlist information requested', ['id' => $playlist_id]);
         $playlist = $this->cacheService->getOrAdd(
@@ -80,7 +78,7 @@ class PlaylistController extends Controller
     }
 
 
-    public function update(PlaylistUpdateRequest $request, int $playlist_id): Response
+    public function updatePlaylist(PlaylistUpdateRequest $request, int $playlist_id): JsonResponse
     {
         $validated = $request->validated();
         $success = $this->repository->updatePlaylist(
@@ -101,20 +99,20 @@ class PlaylistController extends Controller
         );
 
 
-        return response()->noContent();
+        return response()->json();
     }
 
 
-    public function destroy(int $id): Response
+    public function deletePlaylist(int $playlist_id): JsonResponse
     {
-        Log::info('Deleting playlist information requested', ['id' => $id]);
-        $this->repository->deletePlaylist($id);
-        $this->cacheService->delete("playlists:{$id}");
-        return response()->noContent();
+        Log::info('Deleting playlist information requested', ['id' => $playlist_id]);
+        $this->repository->deletePlaylist($playlist_id);
+        $this->cacheService->delete("playlists:{$playlist_id}");
+        return response()->json();
     }
 
 
-    public function showUserPlaylists(int $user_id): JsonResponse
+    public function getUserPlaylists(int $user_id): JsonResponse
     {
         Log::info('All user playlists information requested', ['id' => $user_id]);
         $playlists = $this->repository->getPlaylistsByUserId($user_id);
@@ -123,13 +121,12 @@ class PlaylistController extends Controller
     }
 
 
-    public function putSongToMainPlaylist(Request $request, int $song_id): Response
+    public function putSongToMainPlaylist(Request $request, int $song_id): JsonResponse
     {
-        /** @var AuthInfo $userInfo */
-        $userInfo = $request->attributes->get('authInfo');
-        $mainPlaylist = $this->repository->getMainUserPlaylist($userInfo->user_id);
+        $user_id = $this->getCurrentUserId($request);
+        $mainPlaylist = $this->repository->getMainUserPlaylist($user_id);
         $this->repository->putSongToPlaylist($mainPlaylist->id, $song_id);
-        return response()->noContent();
+        return response()->json();
     }
 
     public function putSongToPlaylist(int $playlist_id, int $song_id): JsonResponse
@@ -146,14 +143,14 @@ class PlaylistController extends Controller
         return response()->json(['id' => $id]);
     }
 
-    public function deleteSongFromPlaylist(int $playlist_id, int $song_id): Response|JsonResponse
+    public function deleteSongFromPlaylist(int $playlist_id, int $song_id): JsonResponse
     {
         $success = $this->repository->deleteSongFromPlaylist($playlist_id, $song_id);
 
         if (!$success) {
             Log::notice(
                 'Deleting nonexistent song from playlist requested', ['playlist_id' => $playlist_id,]);
-            return \response()->json('Playlist not found', 404);
+            return response()->json('Playlist not found', 404);
         }
 
 
@@ -165,21 +162,20 @@ class PlaylistController extends Controller
             ]
         );
 
-        return response()->noContent();
+        return response()->json();
     }
 
-    public function showUserSongs(Request $request): JsonResponse
+    public function getCurrentUserSongs(Request $request): JsonResponse
     {
-        /** @var AuthInfo $userInfo */
-        $userInfo = $request->attributes->get('authInfo');
-        $mainPlaylist = $this->repository->getMainUserPlaylist($userInfo->user_id);
+        $user_id = $this->getCurrentUserId($request);
+        $mainPlaylist = $this->repository->getMainUserPlaylist($user_id);
         $songs = $this->songRepository->getSongsFromPlaylist($mainPlaylist->id);
         $mapper = new SongMapper();
         $models = $songs->map(fn(Song $song): SongModel => $mapper->mapSong($song))->toArray();
         return response()->json($models);
     }
 
-    public function showMainUserPlaylist(int $user_id): JsonResponse
+    public function getMainUserPlaylist(int $user_id): JsonResponse
     {
         $mainPlaylist = $this->repository->getMainUserPlaylist($user_id);
         if ($mainPlaylist === null) {

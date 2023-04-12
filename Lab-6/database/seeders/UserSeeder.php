@@ -25,7 +25,7 @@ class UserSeeder extends Seeder
                 'created_at' => Carbon::now()->subYears(10),
                 'updated_at' => Carbon::now(),
                 'password' => Hash::make('secret'),
-                'roles' => 15
+                'roles' => 1
             ],
             [
                 'name' => 'Anton',
@@ -37,7 +37,7 @@ class UserSeeder extends Seeder
                 'created_at' => Carbon::now()->subYears(6),
                 'updated_at' => Carbon::now(),
                 'password' => Hash::make('secret'),
-                'roles' => 7
+                'roles' => 1
             ],
             [
                 'name' => 'Viktor',
@@ -64,6 +64,17 @@ class UserSeeder extends Seeder
                 'roles' => 1
             ]
         ]);
+
+        for ($i = 1; $i <= 4; $i++) {
+            DB::table('playlists')->insert([
+                [
+                    'user_id' => $i,
+                    'title' => 'main',
+                    'created_at' => Carbon::now(),
+                    'updated_at' => Carbon::now(),
+                ]
+            ]);
+        }
 
     }
 }

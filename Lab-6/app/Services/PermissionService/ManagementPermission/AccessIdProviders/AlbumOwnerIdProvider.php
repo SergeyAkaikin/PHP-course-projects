@@ -5,7 +5,7 @@ namespace App\Services\PermissionService\ManagementPermission\AccessIdProviders;
 
 use App\Repositories\AlbumRepository;
 
-readonly class AlbumAccessIdProviderImpl implements AccessIdProviderInterface
+readonly class AlbumOwnerIdProvider implements IOwnerIdProvider
 {
     private AlbumRepository $albumRepository;
 
@@ -14,7 +14,7 @@ readonly class AlbumAccessIdProviderImpl implements AccessIdProviderInterface
         $this->albumRepository = new AlbumRepository();
     }
 
-    public function requestedResourceAccessId(int $contentId): ?int
+    public function getOwnerId(int $contentId): ?int
     {
         return $this->albumRepository->getArtistId($contentId);
     }

@@ -17,8 +17,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', [HomeController::class, 'index'])->middleware([Have::permissions(PermissionCode::AccessMusicCollection)]);
+Route::get('/', [HomeController::class, 'albums'])->middleware([Have::permissions(PermissionCode::AccessMusicCollection)]);
 Route::get('login', [HomeController::class, 'login'])->withoutMiddleware(Authenticate::class);
-Route::get('album/{album_id}', [HomeController::class, 'show'])
+Route::get('album/{album_id}', [HomeController::class, 'albumInfo'])
     ->whereNumber('album_id')
     ->middleware([Have::permissions(PermissionCode::AccessMusicCollection)]);

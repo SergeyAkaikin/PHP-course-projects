@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\BaseController;
 use App\Http\Requests\UserStoreRequest;
 use App\Models\User;
 use App\Repositories\ArtistRepository;
@@ -12,10 +12,9 @@ use App\Services\CacheService;
 use App\Utils\Mappers\ArtistMapper;
 use App\ViewModels\ArtistModel;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
 
-class ArtistController extends Controller
+class ArtistController extends BaseController
 {
     public function __construct(
         private readonly ArtistRepository $repository,
@@ -26,16 +25,16 @@ class ArtistController extends Controller
     }
 
 
-    public function index(): Response
+    public function getArtists(): JsonResponse
     {
         Log::info('All artist information requested');
         $artists = $this->repository->getArtists()->map(fn(User $artist): ArtistModel => $this->artistMapper->mapArtist($artist));
-        return response($artists, 200);
+        return response()->json($artists);
 
     }
 
 
-    public function store(UserStoreRequest $request): JsonResponse
+    public function storeArtist(UserStoreRequest $request): JsonResponse
     {
 
         $data = $request->body();
@@ -63,7 +62,7 @@ class ArtistController extends Controller
     }
 
 
-    public function show(int $artist_id): Response|JsonResponse
+    public function getArtist(int $artist_id): JsonResponse
     {
         Log::info('Artist information requested', ['id' => $artist_id]);
         $artist = $this->cacheService->getOrAdd("users:{$artist_id}", function () use ($artist_id) {
@@ -74,7 +73,7 @@ class ArtistController extends Controller
     }
 
 
-    public function update(UserStoreRequest $request, int $artist_id): Response|JsonResponse
+    public function updateArtist(UserStoreRequest $request, int $artist_id): JsonResponse
     {
         $artist = $request->body();
 
@@ -106,11 +105,11 @@ class ArtistController extends Controller
             ]
         );
         $this->cacheService->delete("users:{$artist_id}");
-        return response()->noContent();
+        return response()->json();
     }
 
 
-    public function destroy(int $artist_id): Response|JsonResponse
+    public function deleteUser(int $artist_id): JsonResponse
     {
         $success = $this->repository->deleteArtist($artist_id);
 
@@ -121,6 +120,6 @@ class ArtistController extends Controller
 
         Log::info('Destroying artist information requested', ['id' => $artist_id]);
         $this->cacheService->delete("users:{$artist_id}");
-        return response()->noContent();
+        return response()->json();
     }
 }

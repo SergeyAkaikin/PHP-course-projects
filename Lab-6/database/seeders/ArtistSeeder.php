@@ -26,7 +26,7 @@ class ArtistSeeder extends Seeder
                 'updated_at' => Carbon::now(),
                 'is_artist' => true,
                 'password' => Hash::make('secret'),
-                'roles' => 2
+                'roles' => 3
             ],
             [
                 'name' => 'Danil',
@@ -39,7 +39,7 @@ class ArtistSeeder extends Seeder
                 'updated_at' => Carbon::now(),
                 'is_artist' => true,
                 'password' => Hash::make('secret'),
-                'roles' => 2
+                'roles' => 3
             ],
             [
                 'name' => 'Denis',
@@ -52,7 +52,7 @@ class ArtistSeeder extends Seeder
                 'updated_at' => Carbon::now(),
                 'is_artist' => true,
                 'password' => Hash::make('secret'),
-                'roles' => 2
+                'roles' => 3
             ],
             [
                 'name' => 'Nyusha',
@@ -65,8 +65,18 @@ class ArtistSeeder extends Seeder
                 'updated_at' => Carbon::now(),
                 'is_artist' => true,
                 'password' => Hash::make('secret'),
-                'roles' => 2
+                'roles' => 3
             ]
         ]);
+        for ($i = 5; $i <= 8; $i++) {
+            DB::table('playlists')->insert([
+                [
+                    'user_id' => $i,
+                    'title' => 'main',
+                    'created_at' => Carbon::now(),
+                    'updated_at' => Carbon::now(),
+                ]
+            ]);
+        }
     }
 }

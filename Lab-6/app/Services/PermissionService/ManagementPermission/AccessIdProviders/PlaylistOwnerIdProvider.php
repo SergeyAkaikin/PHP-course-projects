@@ -5,7 +5,7 @@ namespace App\Services\PermissionService\ManagementPermission\AccessIdProviders;
 
 use App\Repositories\PlaylistRepository;
 
-readonly class PlaylistAccessIdProviderImpl implements AccessIdProviderInterface
+readonly class PlaylistOwnerIdProvider implements IOwnerIdProvider
 {
     private PlaylistRepository $playlistRepository;
 
@@ -14,7 +14,7 @@ readonly class PlaylistAccessIdProviderImpl implements AccessIdProviderInterface
         $this->playlistRepository = new PlaylistRepository();
     }
 
-    public function requestedResourceAccessId(int $contentId): ?int
+    public function getOwnerId(int $contentId): ?int
     {
         return $this->playlistRepository->getUserId($contentId);
     }

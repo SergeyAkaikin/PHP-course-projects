@@ -12,17 +12,11 @@ enum PermissionCode: int
 
     case ManageOwnSongs = 4;
 
-    case ManageAllMusicContent = 5;
+    case AccessUserInformation = 5;
 
-    case AccessUserInformation = 6;
+    case ManageOwnUserInfo = 6;
 
-    case ManageOwnUserInfo = 7;
+    case UploadMusicContent = 7;
 
-    case ManageAllUsersInfo = 8;
-
-    case DeleteMusicContent = 9;
-
-    case UploadMusicContent = 10;
-
-    case CreatePlaylist = 11;
+    case CreatePlaylist = 8;
 }

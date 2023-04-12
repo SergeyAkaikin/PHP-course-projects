@@ -5,13 +5,12 @@ namespace App\Http\Middleware;
 
 use App\Models\Auth\AuthInfo;
 use App\Models\Permissions\PermissionCode;
-use App\Services\PermissionService\ManagementPermissionService;
 use Closure;
 use Illuminate\Http\Request;
 
 class Have
 {
-    public function __construct(private readonly ManagementPermissionService $managementPermissionService)
+    public function __construct()
     {
     }
 
@@ -31,16 +30,7 @@ class Have
 
         foreach ($permissionCodes as $permissionCode) {
             if (in_array($permissionCode, $authInfo->permissions, true)) {
-                $accessId = $request->attributes->get('requestedAccessId');
-                if ($this->managementPermissionService->isRegularPermission(PermissionCode::from(intval($permissionCode))) && $accessId !== null) {
-                    if ($authInfo->user_id === $accessId) {
-                        return $next($request);
-                    }
-
-                } else {
-                    return $next($request);
-                }
-
+                return $next($request);
             }
         }
 

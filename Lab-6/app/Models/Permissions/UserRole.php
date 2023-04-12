@@ -7,6 +7,5 @@ enum UserRole: int
     case RegularUser = 1;
 
     case Artist = 2;
-    case Moderator = 4;
-    case Admin = 8;
+
 }

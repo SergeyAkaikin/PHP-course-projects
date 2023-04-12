@@ -89,7 +89,8 @@ return new class extends Migration {
                 ->onDelete('cascade');
             $table->foreignId('song_id')
                 ->references('id')
-                ->on('songs');
+                ->on('songs')
+                ->onDelete('cascade');
             $table->timestamp('created_at');
             $table->timestamp('updated_at');
             $table->timestamp('deleted_at')->nullable();

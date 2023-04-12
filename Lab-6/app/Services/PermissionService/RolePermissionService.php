@@ -23,15 +23,7 @@ class RolePermissionService
             PermissionCode::ManageOwnSongs,
             PermissionCode::UploadMusicContent,
         ],
-        UserRole::Moderator->value => [
-            PermissionCode::DeleteMusicContent,
 
-        ],
-
-        UserRole::Admin->value => [
-            PermissionCode::ManageAllUsersInfo,
-            PermissionCode::ManageAllMusicContent,
-        ]
     ];
 
 

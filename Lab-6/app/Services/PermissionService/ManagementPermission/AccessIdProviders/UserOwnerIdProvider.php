@@ -3,10 +3,10 @@ declare(strict_types=1);
 
 namespace App\Services\PermissionService\ManagementPermission\AccessIdProviders;
 
-readonly class UserAccessIdProviderImpl implements AccessIdProviderInterface
+readonly class UserOwnerIdProvider implements IOwnerIdProvider
 {
 
-    public function requestedResourceAccessId(int $contentId): ?int
+    public function getOwnerId(int $contentId): ?int
     {
         return $contentId;
     }

@@ -113,15 +113,15 @@ class SongRepository
         return $songIdObject?->artist_id;
     }
 
-    public function deleteSongFromAlbum(int $album_id, int $song_id): bool
+    public function deleteSongFromAlbum(int $album_id, int $song_id): void
     {
         DB::table('album_songs')->where('album_id', '=', $album_id)
             ->where('song_id', '=', $song_id)->delete();
-        return $this->deleteSong($song_id);
+        $this->deleteSong($song_id);
     }
 
-    public function deleteSong(int $song_id): bool
+    public function deleteSong(int $song_id): void
     {
-        return (bool)DB::table('songs')->delete($song_id);
+        DB::table('songs')->delete($song_id);
     }
 }

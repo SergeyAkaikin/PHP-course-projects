@@ -81,4 +81,11 @@ class PlaylistRepository
             ->first();
     }
 
+    public function createMainPlaylist(int $user_id): void
+    {
+        DB::table('playlists')->insert(
+            ['user_id' => $user_id, 'title' => 'main', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+        );
+    }
+
 }

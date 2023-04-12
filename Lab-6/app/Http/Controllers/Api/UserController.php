@@ -4,35 +4,36 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\BaseController;
 use App\Http\Requests\UserStoreRequest;
+use App\Repositories\PlaylistRepository;
 use App\Repositories\UserRepository;
 use App\Services\CacheService;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
 
-class UserController extends Controller
+class UserController extends BaseController
 {
 
     public function __construct(
         private readonly UserRepository $repository,
-        private readonly CacheService   $cacheService
+        private readonly CacheService   $cacheService,
+        private readonly PlaylistRepository $playlistRepository,
     )
     {
     }
 
 
-    public function index(): Response
+    public function getUsers(): JsonResponse
     {
         Log::info("All users info requested");
         $users = $this->repository->getUsers();
-        return response($users, 200);
+        return response()->json($users);
 
     }
 
 
-    public function store(UserStoreRequest $request): JsonResponse
+    public function storeUser(UserStoreRequest $request): JsonResponse
     {
 
         $data = $request->body();
@@ -56,11 +57,12 @@ class UserController extends Controller
             $data->user_name
         );
 
+        $this->playlistRepository->createMainPlaylist($id);
         return response()->json(['id' => $id]);
     }
 
 
-    public function show(int $user_id): Response|JsonResponse
+    public function getUser(int $user_id): JsonResponse
     {
         Log::info("User info requested", ['id' => $user_id]);
         $user = $this->cacheService->getOrAdd("users:{$user_id}", fn() => $this->repository->getUser($user_id), 120);
@@ -68,7 +70,7 @@ class UserController extends Controller
     }
 
 
-    public function update(UserStoreRequest $request, int $user_id): Response|JsonResponse
+    public function updateUser(UserStoreRequest $request, int $user_id): JsonResponse
     {
         $data = $request->body();
 
@@ -97,11 +99,11 @@ class UserController extends Controller
             ]
         );
         $this->cacheService->delete("users:{$user_id}");
-        return response()->noContent();
+        return response()->json();
     }
 
 
-    public function destroy(int $user_id): Response|JsonResponse
+    public function deleteUser(int $user_id): JsonResponse
     {
         $success = $this->repository->deleteUser($user_id);
 
@@ -112,7 +114,7 @@ class UserController extends Controller
 
         Log::info('Destroying user information requested', ['id' => $user_id]);
         $this->cacheService->delete("users:{$user_id}");
-        return response()->noContent();
+        return response()->json();
 
     }
 }

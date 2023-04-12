@@ -25,13 +25,13 @@ class HomeController extends Controller
     {
     }
 
-    public function index(): View
+    public function albums(): View
     {
         return \view('home');
     }
 
 
-    public function show(Request $request, int $album_id): JsonResponse|View
+    public function albumInfo(Request $request, int $album_id): JsonResponse|View
     {
 
 
@@ -54,9 +54,8 @@ class HomeController extends Controller
         );
 
         $canManage = $this->albumPageService->canManage($request, $album_id);
-        $canDelete = $this->albumPageService->canDelete($request, $album_id);
 
-        return \view('album', ['album' => $album, 'canManage' => $canManage, 'canDelete' => $canDelete]);
+        return \view('album', ['album' => $album, 'canManage' => $canManage]);
     }
 
 
