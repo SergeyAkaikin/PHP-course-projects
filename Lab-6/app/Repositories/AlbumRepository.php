@@ -14,7 +14,7 @@ class AlbumRepository
 
     public function getAlbums(): Collection
     {
-        return Album::query()->get();
+        return Album::query()->orderByDesc('rating')->get();
     }
 
     public function getAlbum(int $album_id): ?Album

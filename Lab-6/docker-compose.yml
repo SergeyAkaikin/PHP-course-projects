@@ -5,6 +5,7 @@ volumes:
     db-mysql:
     redis:
     minio:
+    cron-server-storage:
 
 networks:
     c4_network:
@@ -43,7 +44,7 @@ services:
             - ":9000"
         extra_hosts:
             - "host.docker.internal:host-gateway"
-            - "mysql.docker.internal:172.15.0.4"
+            - "db.music.local:172.15.0.4"
             - "redis.docker.local:172.15.0.5"
         volumes:
             - ./:/var/www/api-music
@@ -92,3 +93,35 @@ services:
             MINIO_ROOT_USER: music_user
             MINIO_ROOT_PASSWORD: secret123
         command: server --address :9005 --console-address :9006 /data
+    cron-scheduler:
+        build:
+            context: ./docker
+            dockerfile: cron-scheduler.Dockerfile
+        restart: always
+        container_name: cron-scheduler
+        networks:
+            c4_network:
+                ipv4_address: 172.15.0.7
+        extra_hosts:
+            -   "db.music.local:172.15.0.4"
+            -   "redis.docker.local:172.15.0.5"
+        volumes:
+            -   ./:/var/www/api-music
+            - cron-server-storage:/var/www/api-music/storage
+    cron-process-subscriptions:
+        build:
+            context: ./docker
+            dockerfile: cron-worker.Dockerfile
+        restart: always
+        container_name: cron-process-subscriptions
+        working_dir: /var/www/api-music
+        networks:
+            c4_network:
+                ipv4_address: 172.15.0.8
+        extra_hosts:
+            - "db.music.local:172.15.0.4"
+            - "redis.docker.local:172.15.0.5"
+        volumes:
+            -   ./:/var/www/api-music
+            - cron-server-storage:/var/www/api-music/storage
+        command: php /var/www/api-music/artisan queue:work --queue=process-subscriptions --timeout 60

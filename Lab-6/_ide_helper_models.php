@@ -92,6 +92,31 @@ namespace App\Models{
 
 namespace App\Models{
 /**
+ * App\Models\Subscription
+ *
+ * @property int $id
+ * @property int $price
+ * @property int $discount
+ * @property string $next_billing_time
+ * @property \Illuminate\Support\Carbon $created_at
+ * @property \Illuminate\Support\Carbon $updated_at
+ * @property string|null $deleted_at
+ * @method static \Illuminate\Database\Eloquent\Builder|Subscription newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Subscription newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Subscription query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Subscription whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Subscription whereDeletedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Subscription whereDiscount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Subscription whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Subscription whereNextBillingTime($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Subscription wherePrice($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Subscription whereUpdatedAt($value)
+ */
+	class Subscription extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
  * App\Models\User
  *
  * @property int $id

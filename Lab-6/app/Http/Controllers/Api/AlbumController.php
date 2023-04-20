@@ -22,7 +22,6 @@ class AlbumController extends BaseController
         private readonly AlbumRepository    $albumRepository,
         private readonly CacheService       $cacheService,
         private readonly AlbumMapper        $albumMapper,
-        private readonly AlbumRatingService $albumRatingService,
     )
     {
     }
@@ -32,9 +31,8 @@ class AlbumController extends BaseController
 
         $albums = $this->albumRepository->getAlbums();
         $albumModels = $albums->map(fn(Album $album): AlbumModel => $this->albumMapper->mapAlbum($album));
-        $rankedAlbums = $this->albumRatingService->getRankedList($albumModels)->toArray();
 
-        return response()->json($rankedAlbums);
+        return response()->json($albumModels);
     }
 
 
