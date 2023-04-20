@@ -62,23 +62,23 @@ class ArtistController extends BaseController
     }
 
 
-    public function getArtist(int $artist_id): JsonResponse
+    public function getArtist(int $artistId): JsonResponse
     {
-        Log::info('Artist information requested', ['id' => $artist_id]);
-        $artist = $this->cacheService->getOrAdd("users:{$artist_id}", function () use ($artist_id) {
-            $artist = $this->repository->getArtist($artist_id);
+        Log::info('Artist information requested', ['id' => $artistId]);
+        $artist = $this->cacheService->getOrAdd("users:{$artistId}", function () use ($artistId) {
+            $artist = $this->repository->getArtist($artistId);
             return ($artist === null) ? null : ($this->artistMapper->mapArtist($artist));
         }, 120);
         return ($artist === null) ? response()->json('Artist not found', 404) : response()->json($artist);
     }
 
 
-    public function updateArtist(UserStoreRequest $request, int $artist_id): JsonResponse
+    public function updateArtist(UserStoreRequest $request, int $artistId): JsonResponse
     {
         $artist = $request->body();
 
         $success = $this->repository->updateArtist(
-            $artist_id,
+            $artistId,
             $artist->name,
             $artist->surname,
             $artist->lastname,
@@ -88,14 +88,14 @@ class ArtistController extends BaseController
         );
 
         if (!$success) {
-            Log::notice('Updating nonexistent artist information', ['id' => $artist_id]);
+            Log::notice('Updating nonexistent artist information', ['id' => $artistId]);
             return response()->json('Artist not found', 404);
         }
 
         Log::info(
             'Updating artist information requested',
             [
-                'id' => $artist_id,
+                'id' => $artistId,
                 'name' => $artist->name,
                 'surname' => $artist->surname,
                 'lastname' => $artist->lastname,
@@ -104,22 +104,22 @@ class ArtistController extends BaseController
                 'user_name' => $artist->user_name
             ]
         );
-        $this->cacheService->delete("users:{$artist_id}");
+        $this->cacheService->delete("users:{$artistId}");
         return response()->json();
     }
 
 
-    public function deleteUser(int $artist_id): JsonResponse
+    public function deleteUser(int $artistId): JsonResponse
     {
-        $success = $this->repository->deleteArtist($artist_id);
+        $success = $this->repository->deleteArtist($artistId);
 
         if (!$success) {
-            Log::notice('Destroying nonexistent artist information requested', ['id' => $artist_id]);
+            Log::notice('Destroying nonexistent artist information requested', ['id' => $artistId]);
             return response()->json('Artist not found', 404);
         }
 
-        Log::info('Destroying artist information requested', ['id' => $artist_id]);
-        $this->cacheService->delete("users:{$artist_id}");
+        Log::info('Destroying artist information requested', ['id' => $artistId]);
+        $this->cacheService->delete("users:{$artistId}");
         return response()->json();
     }
 }

@@ -36,7 +36,7 @@ class AlbumController extends BaseController
     }
 
 
-    public function storeAlbum(AlbumStoreRequest $request): JsonResponse
+    public function putAlbum(AlbumStoreRequest $request): JsonResponse
     {
 
         $album = $request->body();
@@ -52,12 +52,12 @@ class AlbumController extends BaseController
     }
 
 
-    public function getAlbum(int $album_id): JsonResponse
+    public function getAlbum(int $albumId): JsonResponse
     {
-        Log::info('Album information requested', ['id' => $album_id]);
+        Log::info('Album information requested', ['id' => $albumId]);
 
-        $album = $this->cacheService->getOrAdd("albums:{$album_id}", function () use ($album_id) {
-            $album = $this->albumRepository->getAlbum($album_id);
+        $album = $this->cacheService->getOrAdd("albums:{$albumId}", function () use ($albumId) {
+            $album = $this->albumRepository->getAlbum($albumId);
             return ($album === null) ? null : $this->albumMapper->mapAlbum($album);
         }, 120);
 
@@ -65,34 +65,34 @@ class AlbumController extends BaseController
     }
 
 
-    public function updateAlbum(AlbumUpdateRequest $request, int $id): JsonResponse
+    public function updateAlbum(AlbumUpdateRequest $request, int $albumId): JsonResponse
     {
         $album = $request->body();
         Log::info(
             'Updating album information requested',
             [
-                'id' => $id,
+                'id' => $albumId,
                 'title' => $album->title,
             ]
         );
-        $this->albumRepository->updateAlbum($id, $album->title);
-        $this->cacheService->delete("albums:{$id}");
-        $this->cacheService->delete("full_albums:{$id}");
+        $this->albumRepository->updateAlbum($albumId, $album->title);
+        $this->cacheService->delete("albums:{$albumId}");
+        $this->cacheService->delete("full_albums:{$albumId}");
         return response()->json();
     }
 
 
-    public function deleteAlbum(int $album_id): JsonResponse
+    public function deleteAlbum(int $albumId): JsonResponse
     {
-        $success = $this->albumRepository->deleteAlbum($album_id);
+        $success = $this->albumRepository->deleteAlbum($albumId);
 
         if (!$success) {
-            Log::notice('Destroying nonexistent album requested', ['id' => $album_id]);
+            Log::notice('Destroying nonexistent album requested', ['id' => $albumId]);
             return \response()->json('Album not found', 404);
         }
 
-        Log::info('Destroying album requested', ['id' => $album_id]);
-        $this->cacheService->delete("albums:{$album_id}");
+        Log::info('Destroying album requested', ['id' => $albumId]);
+        $this->cacheService->delete("albums:{$albumId}");
         return response()->json();
     }
 

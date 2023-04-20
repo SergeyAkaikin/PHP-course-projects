@@ -54,125 +54,120 @@ class SongController extends BaseController
     }
 
 
-    public function getSong(int $song_id): JsonResponse
+    public function getSong(int $songId): JsonResponse
     {
-        Log::info('Song information requested', ['id' => $song_id]);
-        $song = $this->cacheService->getOrAdd("songs:{$song_id}", function () use ($song_id) {
-            $song = $this->repository->getSong($song_id);
+        Log::info('Song information requested', ['id' => $songId]);
+        $song = $this->cacheService->getOrAdd("songs:{$songId}", function () use ($songId) {
+            $song = $this->repository->getSong($songId);
             return ($song === null) ? null : $this->songMapper->mapSong($song);
         }, 120);
         return ($song === null) ? response()->json('Song not found', 404) : response()->json($song);
     }
 
 
-    public function updateSong(SongUpdateRequest $request, int $song_id): JsonResponse
+    public function updateSong(SongUpdateRequest $request, int $songId): JsonResponse
     {
         $song = $request->body();
         $success = $this->repository->updateSong(
-            $song_id,
+            $songId,
             $song->title,
             $song->genre
         );
 
         if (!$success) {
-            Log::notice('Updating nonexistent song information requested', ['id' => $song_id]);
+            Log::notice('Updating nonexistent song information requested', ['id' => $songId]);
             return response()->json('Song not found', 404);
         }
 
         Log::info(
             'Updating song information requested',
             [
-                'id' => $song_id,
+                'id' => $songId,
                 'artist_id' => $song->artist_id,
                 'title' => $song->title,
                 'genre' => $song->genre,
             ]
         );
 
-        $this->cacheService->delete("songs:{$song_id}");
+        $this->cacheService->delete("songs:{$songId}");
         return response()->json();
     }
 
 
-    public function deleteSong(int $song_id): JsonResponse
+    public function deleteSong(int $songId): JsonResponse
     {
-        $song = $this->repository->getSong($song_id);
-        $success = $this->repository->deleteSong($song_id);
-        if (!$success) {
-            Log::notice('Destroying nonexistent song information requested', ['id' => $song_id]);
-            return \response()->json('Song not found', 404);
-        }
-
-        Log::info('Destroying song information requested', ['id' => $song_id]);
-        $this->cacheService->delete("songs:{$song_id}");
+        $song = $this->repository->getSong($songId);
+        $this->repository->deleteSong($songId);
+        Log::info('Destroying song information requested', ['id' => $songId]);
+        $this->cacheService->delete("songs:{$songId}");
         $this->audioService->deleteAudio($song->path);
         return response()->json();
     }
 
 
-    public function getAlbumSongs(int $album_id): JsonResponse
+    public function getAlbumSongs(int $albumId): JsonResponse
     {
-        Log::info('All album songs information requested', ['id' => $album_id]);
-        return response()->json($this->repository->getSongsByAlbum($album_id)
+        Log::info('All album songs information requested', ['id' => $albumId]);
+        return response()->json($this->repository->getSongsByAlbum($albumId)
             ->map(fn(Song $song): SongModel => $this->songMapper->mapSong($song))
         );
     }
 
 
-    public function getArtistSongs(int $artist_id): JsonResponse
+    public function getArtistSongs(int $artistId): JsonResponse
     {
-        Log::info('All artist songs information requested', ['id' => $artist_id]);
-        return response()->json($this->repository->getSongsByArtist($artist_id)
+        Log::info('All artist songs information requested', ['id' => $artistId]);
+        return response()->json($this->repository->getSongsByArtist($artistId)
             ->map(fn(Song $song): SongModel => $this->songMapper->mapSong($song))
         );
     }
 
 
-    public function addSongToAlbum(int $album_id, int $song_id): JsonResponse
+    public function addSongToAlbum(int $albumId, int $songId): JsonResponse
     {
         Log::info(
             'Adding song to album requested',
             [
-                'album_id' => $album_id,
-                'song_id' => $song_id
+                'album_id' => $albumId,
+                'song_id' => $songId
             ]
         );
         $id = $this->repository->putSongToAlbum(
-            $album_id,
-            $song_id
+            $albumId,
+            $songId
         );
         return response()->json($id);
     }
 
-    public function storeAlbumSong(SongStoreRequest $request, int $album_id): JsonResponse
+    public function putAlbumSong(SongStoreRequest $request, int $albumId): JsonResponse
     {
         Log::info(
             'Adding song to album requested',
             [
-                'album_id' => $album_id,
+                'album_id' => $albumId,
             ]
         );
         $song = $request->body();
-        $id = $this->audioService->saveAudio($song->artist_id, $song->title, $song->genre, $song->file, $album_id);
-        $this->repository->putSongToAlbum($album_id, $id);
-        $this->cacheService->delete("full_albums:{$album_id}");
+        $id = $this->audioService->saveAudio($song->artist_id, $song->title, $song->genre, $song->file, $albumId);
+        $this->repository->putSongToAlbum($albumId, $id);
+        $this->cacheService->delete("full_albums:{$albumId}");
         return response()->json($id);
     }
 
 
-    public function getPlaylistSongs(int $playlist_id): JsonResponse
+    public function getPlaylistSongs(int $playlistId): JsonResponse
     {
-        Log::info('All playlist songs information requested', ['id' => $playlist_id]);
-        return response()->json($this->repository->getSongsFromPlaylist($playlist_id)
+        Log::info('All playlist songs information requested', ['id' => $playlistId]);
+        return response()->json($this->repository->getSongsFromPlaylist($playlistId)
             ->map(fn(Song $song): SongModel => $this->songMapper->mapSong($song)));
     }
 
-    public function deleteSongFromAlbum(int $album_id, int $song_id): JsonResponse
+    public function deleteSongFromAlbum(int $albumId, int $songId): JsonResponse
     {
-        $song = $this->repository->getSong($song_id);
-        $this->cacheService->delete("full_albums:{$album_id}");
+        $song = $this->repository->getSong($songId);
+        $this->cacheService->delete("full_albums:{$albumId}");
         $this->audioService->deleteAudio($song->path);
-        $this->repository->deleteSongFromAlbum($album_id, $song_id);
+        $this->repository->deleteSongFromAlbum($albumId, $songId);
         return  response()->json();
     }
 

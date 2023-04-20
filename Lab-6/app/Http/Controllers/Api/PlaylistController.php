@@ -40,7 +40,7 @@ class PlaylistController extends BaseController
     }
 
 
-    public function storePlaylist(PlaylistStoreRequest $request): JsonResponse
+    public function putPlaylist(PlaylistStoreRequest $request): JsonResponse
     {
 
         $playlist = $request->body();
@@ -60,17 +60,17 @@ class PlaylistController extends BaseController
     }
 
 
-    public function getPlaylist(int $playlist_id): JsonResponse
+    public function getPlaylist(int $playlistId): JsonResponse
     {
-        Log::info('Playlist information requested', ['id' => $playlist_id]);
+        Log::info('Playlist information requested', ['id' => $playlistId]);
         $playlist = $this->cacheService->getOrAdd(
-            "playlists:{$playlist_id}",
-            function () use ($playlist_id) {
-                $playlist = $this->repository->getPlaylist($playlist_id);
+            "playlists:{$playlistId}",
+            function () use ($playlistId) {
+                $playlist = $this->repository->getPlaylist($playlistId);
                 if ($playlist === null) {
                     return null;
                 }
-                $songs = $this->songRepository->getSongsFromPlaylist($playlist_id);
+                $songs = $this->songRepository->getSongsFromPlaylist($playlistId);
                 return $this->mapper->mapFullPlaylist($playlist, $songs);
 
             }, 120);
@@ -78,22 +78,22 @@ class PlaylistController extends BaseController
     }
 
 
-    public function updatePlaylist(PlaylistUpdateRequest $request, int $playlist_id): JsonResponse
+    public function updatePlaylist(PlaylistUpdateRequest $request, int $playlistId): JsonResponse
     {
         $validated = $request->validated();
         $success = $this->repository->updatePlaylist(
-            $playlist_id,
+            $playlistId,
             $validated['title'],
         );
 
         if (!$success) {
-            Log::notice('Updating nonexistent playlist information requested', ['id' => $playlist_id,]);
+            Log::notice('Updating nonexistent playlist information requested', ['id' => $playlistId,]);
         }
 
         Log::info(
             'Updating playlist information requested',
             [
-                'id' => $playlist_id,
+                'id' => $playlistId,
                 'title' => $validated['title'],
             ]
         );
@@ -103,53 +103,53 @@ class PlaylistController extends BaseController
     }
 
 
-    public function deletePlaylist(int $playlist_id): JsonResponse
+    public function deletePlaylist(int $playlistId): JsonResponse
     {
-        Log::info('Deleting playlist information requested', ['id' => $playlist_id]);
-        $this->repository->deletePlaylist($playlist_id);
-        $this->cacheService->delete("playlists:{$playlist_id}");
+        Log::info('Deleting playlist information requested', ['id' => $playlistId]);
+        $this->repository->deletePlaylist($playlistId);
+        $this->cacheService->delete("playlists:{$playlistId}");
         return response()->json();
     }
 
 
-    public function getUserPlaylists(int $user_id): JsonResponse
+    public function getUserPlaylists(int $userId): JsonResponse
     {
-        Log::info('All user playlists information requested', ['id' => $user_id]);
-        $playlists = $this->repository->getPlaylistsByUserId($user_id);
+        Log::info('All user playlists information requested', ['id' => $userId]);
+        $playlists = $this->repository->getPlaylistsByUserId($userId);
         $models = $playlists->map(fn(Playlist $playlist): PlaylistModel => $this->mapper->mapPlaylist($playlist));
         return response()->json($models);
     }
 
 
-    public function putSongToMainPlaylist(Request $request, int $song_id): JsonResponse
+    public function putSongToMainPlaylist(Request $request, int $songId): JsonResponse
     {
-        $user_id = $this->getCurrentUserId($request);
-        $mainPlaylist = $this->repository->getMainUserPlaylist($user_id);
-        $this->repository->putSongToPlaylist($mainPlaylist->id, $song_id);
+        $userId = $this->getCurrentUserId($request);
+        $mainPlaylist = $this->repository->getMainUserPlaylist($userId);
+        $this->repository->putSongToPlaylist($mainPlaylist->id, $songId);
         return response()->json();
     }
 
-    public function putSongToPlaylist(int $playlist_id, int $song_id): JsonResponse
+    public function putSongToPlaylist(int $playlistId, int $songId): JsonResponse
     {
         Log::info(
             'Adding song to playlist requested',
             [
-                'playlist_id' => $playlist_id,
-                'song_id' => $song_id
+                'playlist_id' => $playlistId,
+                'song_id' => $songId
             ]
         );
-        $id = $this->repository->putSongToPlaylist($playlist_id, $song_id);
-        $this->cacheService->delete("playlists:{$playlist_id}");
+        $id = $this->repository->putSongToPlaylist($playlistId, $songId);
+        $this->cacheService->delete("playlists:{$playlistId}");
         return response()->json(['id' => $id]);
     }
 
-    public function deleteSongFromPlaylist(int $playlist_id, int $song_id): JsonResponse
+    public function deleteSongFromPlaylist(int $playlistId, int $songId): JsonResponse
     {
-        $success = $this->repository->deleteSongFromPlaylist($playlist_id, $song_id);
+        $success = $this->repository->deleteSongFromPlaylist($playlistId, $songId);
 
         if (!$success) {
             Log::notice(
-                'Deleting nonexistent song from playlist requested', ['playlist_id' => $playlist_id,]);
+                'Deleting nonexistent song from playlist requested', ['playlist_id' => $playlistId,]);
             return response()->json('Playlist not found', 404);
         }
 
@@ -157,8 +157,8 @@ class PlaylistController extends BaseController
         Log::info(
             'Deleting song from playlist requested',
             [
-                'playlist_id' => $playlist_id,
-                'song_id' => $song_id,
+                'playlist_id' => $playlistId,
+                'song_id' => $songId,
             ]
         );
 
@@ -175,9 +175,9 @@ class PlaylistController extends BaseController
         return response()->json($models);
     }
 
-    public function getMainUserPlaylist(int $user_id): JsonResponse
+    public function getMainUserPlaylist(int $userId): JsonResponse
     {
-        $mainPlaylist = $this->repository->getMainUserPlaylist($user_id);
+        $mainPlaylist = $this->repository->getMainUserPlaylist($userId);
         if ($mainPlaylist === null) {
             return response()->json('User not found', 404);
         }

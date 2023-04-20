@@ -19,7 +19,7 @@ async function renderUpdating(id) {
     button.onclick = () => {
         let form = document.getElementById('update_form');
         const formData = new FormData(form);
-        fetch(`/api/albums/${id}/update`, {
+        fetch(`/api/albums/${id}`, {
             method: 'POST',
             headers: {},
             body: formData,

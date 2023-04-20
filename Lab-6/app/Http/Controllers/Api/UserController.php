@@ -62,20 +62,20 @@ class UserController extends BaseController
     }
 
 
-    public function getUser(int $user_id): JsonResponse
+    public function getUser(int $userId): JsonResponse
     {
-        Log::info("User info requested", ['id' => $user_id]);
-        $user = $this->cacheService->getOrAdd("users:{$user_id}", fn() => $this->repository->getUser($user_id), 120);
+        Log::info("User info requested", ['id' => $userId]);
+        $user = $this->cacheService->getOrAdd("users:{$userId}", fn() => $this->repository->getUser($userId), 120);
         return ($user === null) ? response()->json('User not found', 404) : response()->json($user);
     }
 
 
-    public function updateUser(UserStoreRequest $request, int $user_id): JsonResponse
+    public function updateUser(UserStoreRequest $request, int $userId): JsonResponse
     {
         $data = $request->body();
 
         $success = $this->repository->updateUser(
-            $user_id,
+            $userId,
             $data->name,
             $data->surname,
             $data->lastname,
@@ -84,12 +84,12 @@ class UserController extends BaseController
             $data->user_name,
         );
         if (!$success) {
-            Log::notice('Updating nonexistent user information requested', ['id' => $user_id]);
+            Log::notice('Updating nonexistent user information requested', ['id' => $userId]);
             return response()->json('User not found', 404);
         }
         Log::info('Updating user information requested',
             [
-                'id' => $user_id,
+                'id' => $userId,
                 'name' => $data->name,
                 'surname' => $data->surname,
                 'lastname' => $data->lastname,
@@ -98,22 +98,22 @@ class UserController extends BaseController
                 'user_name' => $data->user_name,
             ]
         );
-        $this->cacheService->delete("users:{$user_id}");
+        $this->cacheService->delete("users:{$userId}");
         return response()->json();
     }
 
 
-    public function deleteUser(int $user_id): JsonResponse
+    public function deleteUser(int $userId): JsonResponse
     {
-        $success = $this->repository->deleteUser($user_id);
+        $success = $this->repository->deleteUser($userId);
 
         if (!$success) {
-            Log::notice('Destroying nonexistent user information requested', ['id' => $user_id]);
+            Log::notice('Destroying nonexistent user information requested', ['id' => $userId]);
             return response()->json('User not found', 404);
         }
 
-        Log::info('Destroying user information requested', ['id' => $user_id]);
-        $this->cacheService->delete("users:{$user_id}");
+        Log::info('Destroying user information requested', ['id' => $userId]);
+        $this->cacheService->delete("users:{$userId}");
         return response()->json();
 
     }
