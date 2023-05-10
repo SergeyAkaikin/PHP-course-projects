@@ -1,0 +1,27 @@
+<mat-accordion class="example-headers-align" multi>
+  <mat-expansion-panel>
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        Upload new song
+      </mat-panel-title>
+      <mat-panel-description>
+        Type song title, genres and choose file
+        <mat-icon>music_note</mat-icon>
+      </mat-panel-description>
+    </mat-expansion-panel-header>
+    <form [formGroup]="form">
+    <mat-form-field appearance="fill">
+      <mat-label>Title</mat-label>
+      <input matInput type="text" class="form-control" formControlName="title">
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>Genres</mat-label>
+      <input matInput type="text" class="form-control" formControlName="genre">
+    </mat-form-field>
+
+    <input formControlName="file" type="file" class="form-control" accept="audio/*" (change)="onFileChange($event)">
+    <button mat-button (click)="submit()"><mat-icon>save_alt</mat-icon></button>
+  </form>
+
+  </mat-expansion-panel>

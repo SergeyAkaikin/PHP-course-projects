@@ -1,0 +1,25 @@
+<mat-toolbar color="primary">
+  <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+    <mat-icon>more_vert</mat-icon>
+  </button>
+  <mat-menu #menu="matMenu">
+    <button mat-menu-item routerLink="/">
+      <mat-icon>home</mat-icon>
+      <span>Home</span>
+    </button>
+    <button mat-menu-item routerLink="/mySongs">
+      <mat-icon>favorite</mat-icon>
+      <span>My songs</span>
+    </button>
+    <button mat-menu-item routerLink="/artists">
+      <mat-icon>assignment_ind</mat-icon>
+      <span>Artists</span>
+    </button>
+  </mat-menu>
+  <span>Music Service</span>
+  <span class="spacer"></span>
+  <span>{{name}}</span>
+  <button (click)="logout()" mat-icon-button class="example-icon" aria-label="Example icon-button with share icon" *ngIf="isLogged">
+    <mat-icon>work_off</mat-icon>
+  </button>
+</mat-toolbar>

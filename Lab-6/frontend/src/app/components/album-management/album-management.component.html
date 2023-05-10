@@ -1,0 +1,16 @@
+<div class="main-section">
+  <form [formGroup]="form">
+    <mat-form-field class="form-field">
+      <mat-label>Title</mat-label>
+      <input type="text" matInput placeholder="title" formControlName="title" value={{album.title}}>
+      <button matSuffix mat-icon-button aria-label="Done" (click)="submit()">
+        <mat-icon>done</mat-icon>
+      </button>
+      <mat-error *ngIf="titleControl?.hasError('required')">
+        Title is <strong>required</strong>
+      </mat-error>
+    </mat-form-field>
+  </form>
+
+  <app-upload-song [artistId]="album.artistId" [albumId]="album.id"></app-upload-song>
+</div>

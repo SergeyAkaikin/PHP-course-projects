@@ -1,0 +1,11 @@
+<div class="main-section">
+  <mat-card class="album-element" *ngFor="let album of albums">
+    <mat-card-header>
+      <mat-card-title class="card-title" [routerLink]="['/albums', album.id]">{{album.title}}</mat-card-title>
+      <mat-card-subtitle>{{album.date | date: 'mediumDate'}}</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-footer>
+      <mat-card-content>{{album.rating}} Rating</mat-card-content>
+    </mat-card-footer>
+  </mat-card>
+</div>

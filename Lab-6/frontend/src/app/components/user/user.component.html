@@ -1,0 +1,19 @@
+<div class="main-section">
+  <mat-card class="example-card">
+    <mat-card-header>
+      <mat-card-title-group>
+        <mat-card-title>{{user.userName}}</mat-card-title>
+        <mat-card-subtitle>{{user.name}} {{user.surname}} {{user.lastName}}</mat-card-subtitle>
+        <mat-icon>face</mat-icon>
+      </mat-card-title-group>
+    </mat-card-header>
+    <mat-card-content>
+      <mat-card class="album-element" *ngFor="let album of albums">
+        <mat-card-header>
+          <mat-card-title class="card-title" [routerLink]="['/albums', album.id]">{{album.title}}</mat-card-title>
+          <mat-card-subtitle>{{album.date | date: 'mediumDate'}}</mat-card-subtitle>
+        </mat-card-header>
+      </mat-card>
+    </mat-card-content>
+  </mat-card>
+</div>

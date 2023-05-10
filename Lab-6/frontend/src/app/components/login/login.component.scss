@@ -1,0 +1,13 @@
+.login-card {
+  max-width: 20%;
+  margin: 2% auto;
+  .form-field {
+    width: 100%;
+  }
+
+  .form-actions {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 2% 2% 2%;
+  }
+}

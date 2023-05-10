@@ -1,0 +1,15 @@
+<div class="main-section">
+  <mat-card class="artist-card" *ngFor="let artist of artists">
+  <mat-card-header>
+    <mat-card-title-group>
+      <mat-card-title [routerLink]="['/users', artist.id]" class="artist-title">{{artist.userName}}</mat-card-title>
+      <mat-card-subtitle>{{artist.name}} {{artist.surname}} {{artist.lastName}}</mat-card-subtitle>
+      <mat-icon>face</mat-icon>
+    </mat-card-title-group>
+  </mat-card-header>
+  <mat-card-content>
+    Contact mail: {{artist.email}}
+  </mat-card-content>
+</mat-card>
+</div>
+
