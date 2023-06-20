@@ -1,4 +1,0 @@
-MediumPurple #9370DB
-MedSpringGreen #00FA9A
-LightYellow #FFFFE0
-Peru #CD853F

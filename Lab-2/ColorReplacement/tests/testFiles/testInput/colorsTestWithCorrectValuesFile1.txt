@@ -1,6 +1,0 @@
-FirstColor #20B2AA
-SecondColor #CD5C5C
-ThirdColor #8B4513
-FourthColor #CD853F
-FifthColor #FF00FF
-SixthColor #FFFF00

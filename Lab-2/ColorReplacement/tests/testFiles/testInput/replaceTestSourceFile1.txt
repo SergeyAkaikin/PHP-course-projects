@@ -1,4 +1,0 @@
-some text with #CD5C5C color
-other format #f0f some string etc rgb format is rgb(205, 133, 63) one more correct format but with spaces rgb(   32,      178,170 )
-also color is #FF0
-incorrect examples: #CD5C5, rgb(-1, 178, 170), #000, #F0F0

@@ -1,4 +1,0 @@
-some text with SecondColor color
-other format FifthColor some string etc rgb format is FourthColor one more correct format but with spaces FirstColor
-also color is SixthColor
-incorrect examples: #CD5C5, rgb(-1, 178, 170), #000, #F0F0
