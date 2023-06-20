@@ -6,8 +6,6 @@ import {
 } from '@angular/router';
 import { Album, Playlist, Song } from '../models/music';
 import { MusicLibraryService } from '../services/music-library.service';
-import { AuthState } from '../services/auth.state';
-
 
 export const albumResolver: ResolveFn<{album: Album, canManage: boolean}> =
   (route: ActivatedRouteSnapshot, state: RouterStateSnapshot) => {
